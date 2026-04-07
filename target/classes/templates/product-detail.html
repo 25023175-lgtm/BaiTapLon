@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${product.name}">Product Detail</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f0f2f5; }
+        .container { max-width: 900px; margin: 30px auto; padding: 20px; }
+        .back-btn { display: inline-block; padding: 8px 16px; background: #6c757d; color: white; text-decoration: none; border-radius: 5px; margin-bottom: 20px; }
+        .product-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .product-image { width: 100%; height: 400px; object-fit: cover; }
+        .product-info { padding: 30px; }
+        .product-name { font-size: 28px; margin-bottom: 10px; }
+        .product-desc { color: #666; margin-bottom: 20px; font-size: 16px; }
+        .price-section { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .start-price { color: #666; }
+        .current-price { font-size: 32px; color: #e74c3c; font-weight: bold; }
+        .time-left { color: #e67e22; font-size: 18px; margin: 10px 0; }
+        .seller-info { color: #888; margin-bottom: 20px; }
+        .bid-form { display: flex; gap: 10px; margin-top: 15px; }
+        .bid-form input { flex: 1; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 18px; }
+        .bid-form button { padding: 12px 30px; background: #e74c3c; color: white; border: none; border-radius: 5px; font-size: 18px; cursor: pointer; }
+        .bid-form button:hover { background: #c0392b; }
+        .status-ended { background: #e74c3c; color: white; padding: 15px; text-align: center; border-radius: 8px; font-size: 20px; }
+        .winner-info { background: #27ae60; color: white; padding: 15px; text-align: center; border-radius: 8px; font-size: 18px; margin-top: 10px; }
+        .bid-history { margin-top: 30px; }
+        .bid-history h3 { margin-bottom: 15px; }
+        .bid-item { display: flex; justify-content: space-between; padding: 10px 15px; background: #f8f9fa; margin-bottom: 5px; border-radius: 5px; }
+        .error-msg { background: #e74c3c; color: white; padding: 10px; border-radius: 5px; margin-bottom: 10px; }
+        .success-msg { background: #27ae60; color: white; padding: 10px; border-radius: 5px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="/products" class="back-btn">← Quay lại</a>
+
+    <div th:if="${error}" class="error-msg" th:text="${error}"></div>
+    <div th:if="${success}" class="success-msg" th:text="${success}"></div>
+
+    <div class="product-card">
+        <img th:src="${product.imageUrl}" class="product-image" alt="Product Image">
+        <div class="product-info">
+            <h1 class="product-name" th:text="${product.name}">Product Name</h1>
+            <p class="product-desc" th:text="${product.description}">Description</p>
+            <p class="seller-info">Người bán: <strong th:text="${product.seller.username}">seller</strong></p>
+
+            <div class="price-section">
+                <p class="start-price">Giá khởi điểm: <span th:text="${product.startPrice}">0</span> VNĐ</p>
+                <p class="current-price">💰 <span th:text="${product.currentPrice}">0</span> VNĐ</p>
+                <p class="time-left">⏰ Kết thúc: <span th:text="${#temporals.format(product.endTime, 'dd/MM/yyyy HH:mm')}">time</span></p>
+            </div>
+
+            <!-- Nếu ACTIVE và là BUYER thì hiện form bid -->
+            <div th:if="${product.status == 'ACTIVE' && user != null && user.role == 'BUYER'}">
+                <form class="bid-form" th:action="@{/bid/{id}(id=${product.id})}" method="post">
+                    <input type="number" name="amount" th:placeholder="'Nhập giá > ' + ${product.currentPrice}" step="1000" required>
+                    <button type="submit">🔨 Đặt giá</button>
+                </form>
+            </div>
+
+            <!-- Nếu ENDED -->
+            <div th:if="${product.status == 'ENDED'}">
+                <div class="status-ended">⏰ Phiên đấu giá đã kết thúc!</div>
+                <div th:if="${product.winner != null}" class="winner-info">
+                    🏆 Người thắng: <strong th:text="${product.winner.username}">winner</strong>
+                    - Giá: <strong th:text="${product.currentPrice}">0</strong> VNĐ
+                </div>
+            </div>
+
+            <!-- Nếu chưa đăng nhập -->
+            <div th:if="${user == null}">
+                <p><a href="/login">Đăng nhập</a> để đặt giá!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lịch sử đấu giá -->
+    <div class="bid-history" th:if="${bids != null && !bids.empty}">
+        <h3>📋 Lịch sử đấu giá</h3>
+        <div class="bid-item" th:each="bid : ${bids}">
+            <span th:text="${bid.bidder.username}">user</span>
+            <span th:text="${bid.amount} + ' VNĐ'">0 VNĐ</span>
+            <span th:text="${#temporals.format(bid.bidTime, 'dd/MM HH:mm')}">time</span>
+        </div>
+    </div>
+</div>
+</body>
+</html>
