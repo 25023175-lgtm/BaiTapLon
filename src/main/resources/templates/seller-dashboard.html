@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Seller Dashboard</title>
+    <style>
+        body { font-family: Arial; background: #f0f2f5; padding: 20px; }
+        .header { background: #f57c00; color: white; padding: 20px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .content { background: white; margin-top: 20px; padding: 30px; border-radius: 10px; }
+        a { color: white; text-decoration: none; background: #555; padding: 8px 15px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h2>🏪 Seller Dashboard</h2>
+    <span>strong
+            Xin chào, <strong th:text="${user.username}"></strong>
+            | <a href="/logout">Đăng xuất</a>
+        </span>
+</div>
+<div class="content">
+    <h3>Quản lý sản phẩm đấu giá</h3>
+    <p>Chào mừng Seller! Đây là trang bán hàng.</p>
+</div>
+</body>
+</html>
