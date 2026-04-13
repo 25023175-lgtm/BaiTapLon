@@ -1,0 +1,112 @@
+/* 1. Style cho phần khung ngoài của ComboBox */
+.combo-box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-font-size: 14px;
+    -fx-pref-width: 200px; /* Độ rộng của ô chọn */
+}
+
+/* 2. Hiệu ứng khi di chuột vào ComboBox */
+.combo-box:hover {
+    -fx-border-color: #007bff; /* Đổi viền sang màu xanh dương */
+    -fx-cursor: hand;
+}
+
+/* 3. Phông nền của cái bảng danh sách xổ xuống */
+.combo-box-popup .list-view {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 3px;
+}
+
+/* 4. Style cho từng dòng chữ (Bidder, Seller) trong danh sách */
+.combo-box-popup .list-cell {
+    -fx-padding: 8px 12px;
+    -fx-font-size: 14px;
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #333333;
+}
+
+/* 5. Hiệu ứng khi lướt chuột qua từng dòng */
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: #f8f9fa; /* Màu xám cực nhạt để biết là đang chọn */
+    -fx-text-fill: #333333;
+}
+
+/* 6. CHỈ KHI trỏ chuột vào (Hover) mới nổi màu xanh dương */
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+}
+
+/* =========================================
+   1. Ô NHẬP LIỆU (TextField & PasswordField)
+   ========================================= */
+.text-field, .password-field {
+    -fx-padding: 10px 15px; /* Làm ô nhập to và thoáng hơn */
+    -fx-font-size: 14px;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+/* Hiệu ứng khi click chuột vào ô để gõ (Focus) */
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #007bff; /* Viền xanh đồng bộ với ComboBox */
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,123,255,0.2), 5, 0, 0, 0); /* Bóng mờ màu xanh siêu mượt */
+}
+
+
+/* =========================================
+   2. NÚT BẤM (Button)
+   ========================================= */
+.button {
+    -fx-background-color: #007bff; /* Nền xanh dương đậm */
+    -fx-text-fill: white; /* Chữ trắng */
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand; /* Biến con trỏ chuột thành hình bàn tay */
+}
+
+/* Khi lướt chuột qua nút */
+.button:hover {
+    -fx-background-color: #0056b3; /* Xanh đậm hơn một chút */
+}
+
+/* Khi nhấn giữ chuột vào nút */
+.button:pressed {
+    -fx-background-color: #004085;
+}
+
+
+/* =========================================
+   3. ĐƯỜNG LINK (Hyperlink)
+   ========================================= */
+.hyperlink {
+    -fx-text-fill: #007bff;
+    -fx-font-size: 13px;
+    -fx-underline: false; /* Mặc định không gạch chân */
+    -fx-border-color: transparent; /* Xoá cái viền chấm chấm mặc định cực xấu của JavaFX */
+}
+
+/* Lướt chuột qua link sẽ hiện gạch chân */
+.hyperlink:hover {
+    -fx-underline: true;
+    -fx-text-fill: #0056b3;
+}
+
+
+/* =========================================
+   4. TIÊU ĐỀ (Label)
+   ========================================= */
+.title-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
