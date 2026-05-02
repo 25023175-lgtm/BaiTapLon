@@ -7,6 +7,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import com.auction.common.AuctionClosedException;
+import com.auction.common.InvalidBidException;
 
 public class BidController {
 
@@ -28,15 +30,20 @@ public class BidController {
 
     // 2. Xử lý khi bấm nút "Ra giá"
     @FXML
-    private void handlePlaceBid(ActionEvent event) {
+     void handlePlaceBid(ActionEvent event) {
         try {
             // Lấy số tiền người dùng nhập
             double bidAmount = Double.parseDouble(bidAmountField.getText());
 
             // Luật đấu giá: Tiền đưa ra phải lớn hơn giá hiện tại
+            // 1. BẮT LỖI 1: Nếu phiên đấu giá không còn chữ "ACTIVE" (Đang đấu giá)
+            if (currentProduct.getStatus() != null && !currentProduct.getStatus().equals("ACTIVE")) {
+                throw new AuctionClosedException("Món đồ này đã chốt đơn, không thể ra giá thêm!");
+            }
+
+            // 2. BẮT LỖI 2: Nếu tiền ra giá nhỏ hơn hoặc bằng giá hiện tại
             if (bidAmount <= currentProduct.getCurrentPrice()) {
-                showError("Lỗi ra giá", "Số tiền đấu giá phải LỚN HƠN giá hiện tại!");
-                return;
+                throw new InvalidBidException("Số tiền đấu giá phải cao hơn giá hiện tại!");
             }
 
             // Cập nhật giá mới vào sản phẩm
@@ -44,19 +51,18 @@ public class BidController {
 
             // --- THÊM ĐOẠN NÀY ĐỂ ĐỒNG BỘ REALTIME ---
             try {
-                // 1. Tải danh sách mới nhất từ Server về (để không vô tình ghi đè mất món đồ người khác vừa thêm)
+                // 1. Tải danh sách mới nhất từ Server về
                 java.util.List<com.auction.model.Product> allProducts = DataManager.loadProducts();
 
                 // 2. Tìm đúng món đồ này trong kho và chốt giá mới
                 for (com.auction.model.Product p : allProducts) {
-                    // Đối chiếu bằng tên sản phẩm để tìm đúng món đồ cần sửa giá
                     if (p.getName().equals(currentProduct.getName())) {
                         p.setCurrentPrice(bidAmount);
                         break;
                     }
                 }
 
-                // 3. Gửi danh sách đã chốt giá lên Server để Broadcast cho toàn mạng
+                // 3. Gửi danh sách đã chốt giá lên Server để Broadcast
                 DataManager.saveProducts(allProducts);
                 System.out.println("[CLIENT] Đã gửi giá đấu mới lên Server!");
 
@@ -65,21 +71,26 @@ public class BidController {
                 return;
             }
 
-            // Báo thành công
+            // Báo thành công (ĐOẠN NÀY PHẢI NẰM TRONG TRY LỚN)
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Thành công");
             alert.setHeaderText(null);
             alert.setContentText("Bạn đã ra giá thành công!");
             alert.showAndWait();
 
-            // Tự động đóng cửa sổ Pop-up
+            // Tự động đóng cửa sổ Pop-up (ĐOẠN NÀY CŨNG PHẢI NẰM TRONG TRY LỚN)
             Stage stage = (Stage) bidAmountField.getScene().getWindow();
             stage.close();
 
+            // NƠI TẬP TRUNG HỨNG TẤT CẢ CÁC LỖI
         } catch (NumberFormatException e) {
             showError("Lỗi định dạng", "Vui lòng chỉ nhập số (Ví dụ: 25000000)");
+        } catch (InvalidBidException | AuctionClosedException e) {
+            // Hứng trọn 2 cái lỗi do chính mình ném ra
+            showError("Lỗi hệ thống", e.getMessage());
         }
     }
+
 
     private void showError(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
