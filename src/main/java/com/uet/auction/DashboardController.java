@@ -69,8 +69,8 @@ public class DashboardController implements Initializable {
         });
 
         // 3. Phân quyền Bidder / Seller
-        if (SessionManager.currentUser != null) {
-            String role = SessionManager.currentUser.getRole();
+        if (SessionManager.getInstance().getCurrentUser() != null) {
+            String role = SessionManager.getInstance().getCurrentUser().getRole();
 
             if (role.equals("Bidder")) {
                 // Người mua: Giấu thanh thêm sản phẩm

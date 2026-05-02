@@ -34,7 +34,7 @@ public class LoginController {
             if (u.getUsername().equals(username) && u.getPassword().equals(password)) {
 
                 // Đăng nhập đúng -> Cấp "Thẻ căn cước" SessionManager
-                SessionManager.currentUser = u;
+                SessionManager.getInstance().setCurrentUser(u);
                 isSuccess = true;
                 break; // Tìm thấy rồi thì dừng vòng lặp
             }
@@ -42,7 +42,7 @@ public class LoginController {
 
         // 3. Quyết định cho vào hay đuổi ra
         if (isSuccess) {
-            System.out.println("Đăng nhập thành công với vai trò: " + SessionManager.currentUser.getRole());
+            System.out.println("Đăng nhập thành công với vai trò: " + SessionManager.getInstance().getCurrentUser().getRole());
             SceneManager.switchScene("dashboard-view.fxml", "Hệ thống Đấu giá UET - Trang chủ");
         } else {
             showErrorAlert("Đăng nhập thất bại", "Tài khoản không tồn tại hoặc sai mật khẩu!");
