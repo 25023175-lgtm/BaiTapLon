@@ -15,8 +15,10 @@
       <TextField fx:id="regUsernameField" />
       <PasswordField fx:id="regPasswordField" />
       <PasswordField fx:id="confirmPasswordField" />
+      <TextField fx:id="emailField" />
+      <TextField fx:id="fullNameField" />
       <ComboBox fx:id="roleComboBox" prefWidth="150.0" />
-      <Button fx:id="handleRegister" mnemonicParsing="false" text="Đăng kí" />
+      <Button fx:id="handleRegister" mnemonicParsing="false" onAction="#handleRegister" text="Đăng kí" />
       <Hyperlink fx:id="handleBackToLogin" onAction="#handleBackToLogin" text="Đã có tài khoản? Đăng nhập ngay" />
    </children>
 </VBox>

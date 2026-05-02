@@ -12,7 +12,7 @@
    <children>
       <Label text="ĐĂNG NHẬP" />
       <TextField fx:id="usernameField" />
-      <PasswordField />
+      <PasswordField fx:id="passwordField" />
       <Button mnemonicParsing="false" onAction="#handleLogin" text="Đăng nhập" />
       <Hyperlink fx:id="registerLink" onAction="#handleSwitchToRegister" text="Chưa có tài khoản ? Đăng kí ngay" />
    </children>

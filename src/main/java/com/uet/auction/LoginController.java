@@ -19,14 +19,34 @@ public class LoginController {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
+        // 1. Kiểm tra bỏ trống
         if (username.isEmpty() || password.isEmpty()) {
             showErrorAlert("Lỗi nhập liệu", "Vui lòng điền đầy đủ thông tin!");
             return;
         }
 
-        System.out.println("Đăng nhập: " + username);
-        // Sau này khi đăng nhập thành công, bạn sẽ gọi:
-        // SceneManager.switchScene("dashboard-view.fxml", "Bảng điều khiển");
+        // 2. Kéo dữ liệu từ kho lên để đối chiếu
+        java.util.List<com.auction.model.User> users = DataManager.loadUsers();
+        boolean isSuccess = false;
+
+        for (com.auction.model.User u : users) {
+            // Kiểm tra xem tên đăng nhập và mật khẩu có khớp 100% không
+            if (u.getUsername().equals(username) && u.getPassword().equals(password)) {
+
+                // Đăng nhập đúng -> Cấp "Thẻ căn cước" SessionManager
+                SessionManager.currentUser = u;
+                isSuccess = true;
+                break; // Tìm thấy rồi thì dừng vòng lặp
+            }
+        }
+
+        // 3. Quyết định cho vào hay đuổi ra
+        if (isSuccess) {
+            System.out.println("Đăng nhập thành công với vai trò: " + SessionManager.currentUser.getRole());
+            SceneManager.switchScene("dashboard-view.fxml", "Hệ thống Đấu giá UET - Trang chủ");
+        } else {
+            showErrorAlert("Đăng nhập thất bại", "Tài khoản không tồn tại hoặc sai mật khẩu!");
+        }
     }
 
     @FXML

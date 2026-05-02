@@ -18,7 +18,7 @@ public class SceneManager {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(SceneManager.class.getResource(fxmlFile));
             // Kích thước mặc định là 400x500 cho các màn hình khởi đầu
-            Scene scene = new Scene(fxmlLoader.load(), 400, 500);
+            Scene scene = new Scene(fxmlLoader.load(), 800, 600);
 
             primaryStage.setTitle(title);
             primaryStage.setScene(scene);
