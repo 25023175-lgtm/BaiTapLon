@@ -126,7 +126,12 @@
 
 /* Nền của dashboard (màu xám nhạt đặc trưng giúp nổi bật các khối trắng) */
 .dashboard-root {
-    -fx-background-color: linear-gradient(to bottom right, #141e30, #243b55);
+    /* Màu nền xám nhạt tinh tế */
+    -fx-background-color: #f4f6f9;
+    /* Lấy họa tiết nhiễu chìm (noise) trực tiếp từ web */
+    -fx-background-image: url('https://www.transparenttextures.com/patterns/diagonal-noise.png');
+    /* Lặp họa tiết kín màn hình */
+    -fx-background-repeat: repeat;
 }
 
 /* Thanh Header phía trên cùng (trắng, đổ bóng nhẹ xuống dưới) */

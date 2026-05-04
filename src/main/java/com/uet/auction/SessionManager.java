@@ -9,7 +9,7 @@ public class SessionManager {
     // Biến lưu người dùng hiện tại
     private User currentUser;
 
-    // 2. [QUAN TRỌNG NHẤT] Private Constructor: Cấm không cho bất cứ ai dùng lệnh 'new SessionManager()'
+    // 2. Private Constructor: Cấm không cho bất cứ ai dùng lệnh 'new SessionManager()'
     private SessionManager() {
     }
 

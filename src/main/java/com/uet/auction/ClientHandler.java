@@ -22,7 +22,7 @@ public class ClientHandler implements Runnable {
             out.flush();
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 
-            // 1. Lắng nghe xem Client hét mật mã gì?
+            // 1. Nghe xem Client báo mật mã gì?
             String command = (String) in.readObject();
 
             if (command.equals("GET")) {
@@ -51,12 +51,12 @@ public class ClientHandler implements Runnable {
                 while (true) {
                     in.readObject();
                 }
-            } // <-- Dấu ngoặc này chính là cái bạn bị thiếu để đóng nhánh LISTEN!
+            }
 
             // Xong việc thì cúp máy (Chỉ áp dụng cho GET và SAVE, nhánh LISTEN đã bị treo ở trên)
             socket.close();
 
-        } catch (Exception e) { // <-- Dấu ngoặc trước chữ catch này để đóng khối try!
+        } catch (Exception e) { 
             System.out.println("[LỖI SERVER] Giao tiếp với Client bị gián đoạn.");
         }
     }

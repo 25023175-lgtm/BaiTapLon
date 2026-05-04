@@ -51,14 +51,14 @@ public class RegisterController {
             return;
         }
 
-        // 3. Tạo User mới theo chuẩn của Thành viên A
+        // 3. Tạo User mới 
         User newUser = new User(username, password, email, fullName, role);
 
         System.out.println("Đăng ký tài khoản: " + newUser.getUsername());
         System.out.println("Họ tên: " + newUser.getFullName());
         System.out.println("Vai trò đã chọn: " + role);
 
-        // Code xử lý lưu người dùng mới sẽ nằm ở đây sau này
+
         // Gọi DataManager để lưu người dùng vào file
         DataManager.saveUser(newUser);
 

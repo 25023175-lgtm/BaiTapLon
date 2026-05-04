@@ -49,7 +49,7 @@ public class BidController {
             // Cập nhật giá mới vào sản phẩm
             currentProduct.setCurrentPrice(bidAmount);
 
-            // --- THÊM ĐOẠN NÀY ĐỂ ĐỒNG BỘ REALTIME ---
+
             try {
                 // 1. Tải danh sách mới nhất từ Server về
                 java.util.List<com.auction.model.Product> allProducts = DataManager.loadProducts();
@@ -78,11 +78,11 @@ public class BidController {
             alert.setContentText("Bạn đã ra giá thành công!");
             alert.showAndWait();
 
-            // Tự động đóng cửa sổ Pop-up (ĐOẠN NÀY CŨNG PHẢI NẰM TRONG TRY LỚN)
+            // Tự động đóng cửa sổ Pop-up
             Stage stage = (Stage) bidAmountField.getScene().getWindow();
             stage.close();
 
-            // NƠI TẬP TRUNG HỨNG TẤT CẢ CÁC LỖI
+            // Bắt các lỗi
         } catch (NumberFormatException e) {
             showError("Lỗi định dạng", "Vui lòng chỉ nhập số (Ví dụ: 25000000)");
         } catch (InvalidBidException | AuctionClosedException e) {

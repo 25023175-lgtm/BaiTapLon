@@ -6,10 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="3cdd559f-324e-495d-9afd-4b317b85caaa" name="Changes" comment="Hoàn thành UI đăng nhập, Đăng ký và kết nối SceneManager">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_products.dat" beforeDir="false" afterPath="$PROJECT_DIR$/server_products.dat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/AuctionServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/AuctionServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/BidController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/BidController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/ClientHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/DashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/DashboardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/uet/auction/dashboard-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/uet/auction/dashboard-view.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/uet/auction/login-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/uet/auction/login-view.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/RegisterController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/RegisterController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/com/uet/auction/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/uet/auction/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -245,7 +246,7 @@
       <workItem from="1776191574635" duration="8076000" />
       <workItem from="1777019404768" duration="31000" />
       <workItem from="1777097885925" duration="22521000" />
-      <workItem from="1777885938306" duration="5264000" />
+      <workItem from="1777885938306" duration="6640000" />
     </task>
     <task id="LOCAL-00001" summary="Hoàn thành UI đăng nhập, Đăng ký và kết nối SceneManager">
       <option name="closed" value="true" />

@@ -13,7 +13,7 @@ public class AuctionServer {
 
     // ĐÂY LÀ TRÁI TIM CỦA HỆ THỐNG: Danh sách sản phẩm dùng chung cho mọi người
     public static List<Product> sharedProductList = new ArrayList<>();
-    // Dòng này thêm ngay dưới dòng khai báo sharedProductList
+
     public static List<java.io.ObjectOutputStream> onlineClients = new java.util.ArrayList<>();
 
     public static void main(String[] args) {
@@ -44,9 +44,9 @@ public class AuctionServer {
                 // 3. Giao Client này cho một luồng (Thread) riêng xử lý
                 ClientHandler handler = new ClientHandler(clientSocket);
                 new Thread(handler).start();
-                // ...
 
-                // Tạm thời dừng ở đây. Lát nữa chúng ta sẽ giao Client này cho một "Nhân viên phục vụ" (Thread) xử lý.
+
+                // Tạm thời dừng ở đây. Lát nữa sẽ giao Client này cho một "Nhân viên phục vụ" (Thread) xử lý.
             }
 
         } catch (IOException e) {
@@ -55,7 +55,7 @@ public class AuctionServer {
         }
     }
 
-    // 1. Hàm này dùng từ khóa synchronized: Đảm bảo tại 1 thời điểm, chỉ có 1 luồng được phép chạy vào đây
+    // synchronized: Đảm bảo tại 1 thời điểm, chỉ có 1 luồng được phép chạy vào đây
     public static synchronized void updateAndSaveData(List<Product> newProducts) {
         // Cập nhật lên RAM
         sharedProductList = newProducts;
@@ -68,7 +68,7 @@ public class AuctionServer {
             System.err.println("[SERVER LỖI] Lỗi khi lưu két sắt: " + e.getMessage());
         }
 
-        // 2. BROADCAST: Nhắn tin cho toàn bộ Client đang mở app để họ nhảy số ngay lập tức!
+        // 2. BROADCAST: Nhắn tin cho toàn bộ Client đang mở app để nhảy số ngay lập tức!
         for (java.io.ObjectOutputStream out : onlineClients) {
             try {
                 out.writeObject("UPDATE"); // Gửi mật mã báo hiệu

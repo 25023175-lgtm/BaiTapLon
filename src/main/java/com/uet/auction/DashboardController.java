@@ -43,7 +43,7 @@ public class DashboardController implements Initializable {
         colCurrentPrice.setCellValueFactory(new PropertyValueFactory<>("currentPrice"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
 
-        // 2. Làm đẹp cột Giá (Đã sửa lại cú pháp chuẩn của JavaFX)
+        // 2. Làm đẹp cột Giá
         colStartPrice.setCellFactory(column -> new TableCell<Product, Double>() {
             @Override
             protected void updateItem(Double price, boolean empty) {
@@ -96,7 +96,7 @@ public class DashboardController implements Initializable {
             }
         }
 
-        // 4. TRÙM CUỐI: Bật bộ đàm Realtime hóng dữ liệu từ Server
+        // 4. Bật bộ đàm Realtime nghe dữ liệu từ Server
         DataManager.startRealtimeListener(this);
     }
 
@@ -123,7 +123,7 @@ public void handleAddProduct() {
         newProduct.setCurrentPrice(price);
         newProduct.setStatus("ACTIVE");
 
-        // 2. [ĐÃ VÁ LỖI Ở ĐÂY]: Kiểm tra nếu danh sách đang trống thì phải khởi tạo nó trước
+        // 2. Kiểm tra nếu danh sách đang trống thì phải khởi tạo nó trước
         if (productList == null) {
             productList = javafx.collections.FXCollections.observableArrayList();
             productTable.setItems(productList); // Nối nó vào bảng
@@ -144,7 +144,7 @@ public void handleAddProduct() {
         // Bắt riêng lỗi nhập sai chữ vào ô giá tiền
         System.out.println("Vui lòng nhập đúng định dạng số cho giá tiền!");
     } catch (Exception e) {
-        // Nếu có lỗi khác thì in ra dòng đỏ để mình còn biết đường sửa
+        // Nếu có lỗi khác thì in ra dòng đỏ để sửa
         e.printStackTrace();
     }
 }
@@ -164,7 +164,7 @@ public void handleAddProduct() {
             DataManager.saveProducts(currentList);
 
         } else {
-            // 3. Nếu bấm Xóa mà chưa chọn món nào thì hiện bảng cảnh báo cực xịn
+            // 3. Nếu bấm Xóa mà chưa chọn món nào thì hiện bảng cảnh báo
             javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
             alert.setTitle("Cảnh báo");
             alert.setHeaderText(null);
@@ -189,7 +189,7 @@ private void openBidWindow(Product product) {
         stage.setScene(new javafx.scene.Scene(root));
         stage.show();
 
-        // MẸO CỰC HAY: Khi cửa sổ Pop-up tắt đi, ép cái bảng phải làm mới lại dữ liệu!
+        // Khi cửa sổ Pop-up tắt đi, ép cái bảng phải làm mới lại dữ liệu!
         stage.setOnHidden(e -> {
             productTable.refresh(); // Cập nhật hiển thị giá mới trên bảng
             DataManager.saveProducts(productList); // Lưu giá mới này xuống file
