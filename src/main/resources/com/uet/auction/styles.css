@@ -110,3 +110,48 @@
     -fx-font-weight: bold;
     -fx-text-fill: #333333;
 }
+
+/* 1. Tạo màu nền Gradient (chuyển từ xanh đậm sang xanh nhạt) cho cả màn hình */
+.root-background {
+    -fx-background-color: linear-gradient(to bottom right, #1877F2, #e7f2fe);
+}
+
+/* 2. Tạo hiệu ứng "Card" trắng tinh, bo góc, đổ bóng cho cái khung Đăng nhập */
+.login-card {
+    -fx-background-color: white;
+    -fx-background-radius: 15; /* Bo góc mềm mại */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 20, 0, 0, 10); /* Đổ bóng 3D */
+    -fx-padding: 40; /* Tạo khoảng trống bên trong cho thoáng */
+}
+
+/* Nền của dashboard (màu xám nhạt đặc trưng giúp nổi bật các khối trắng) */
+.dashboard-root {
+    -fx-background-color: linear-gradient(to bottom right, #141e30, #243b55);
+}
+
+/* Thanh Header phía trên cùng (trắng, đổ bóng nhẹ xuống dưới) */
+.header-bar {
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 2);
+    -fx-padding: 15 20 15 20;
+}
+
+/* Nút đăng xuất (nền xám nhạt, đổi màu khi di chuột vào) */
+.btn-logout {
+    -fx-background-color: #e4e6eb;
+    -fx-text-fill: #050505;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+.btn-logout:hover {
+    -fx-background-color: #d8dadf;
+}
+
+/* Khung "Thêm sản phẩm" ở dưới đáy (trắng, bo góc, lơ lửng) */
+.add-product-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-padding: 15;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 2);
+}

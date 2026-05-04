@@ -113,37 +113,65 @@ private TextField newPriceField;
 public void handleAddProduct() {
     try {
         // Lấy tên và giá từ 2 ô nhập liệu
-        // (Chú ý: Ở ảnh trước tôi thấy bạn đặt tên biến bị sai chính tả là newNaneField, nếu đúng thế thì sửa lại chữ N thành M ở đây nhé)
         String name = newNameField.getText();
-        double price = Double.parseDouble(newPriceField.getText()); // Thay bằng tên cái biến ô nhập giá của bạn
+        double price = Double.parseDouble(newPriceField.getText());
 
         // 1. Tạo sản phẩm mới
-        // 1. Tạo một sản phẩm bằng khuôn rỗng (không truyền gì cả)
         com.auction.model.Product newProduct = new com.auction.model.Product();
+        newProduct.setName(name);
+        newProduct.setStartPrice(price);
+        newProduct.setCurrentPrice(price);
+        newProduct.setStatus("ACTIVE");
 
-        // 2. Dùng các hàm Setters để "bơm" từ từ từng thông tin vào
-        newProduct.setName(name);                 // Bơm tên
-        newProduct.setStartPrice(price);          // Bơm giá khởi điểm
-        newProduct.setCurrentPrice(price);        // Giá hiện tại bằng luôn giá khởi điểm
-        newProduct.setStatus("ACTIVE");           // Đặt trạng thái là đang đấu giá
+        // 2. [ĐÃ VÁ LỖI Ở ĐÂY]: Kiểm tra nếu danh sách đang trống thì phải khởi tạo nó trước
+        if (productList == null) {
+            productList = javafx.collections.FXCollections.observableArrayList();
+            productTable.setItems(productList); // Nối nó vào bảng
+        }
 
-        // Các biến khác (description, endTime...) bạn không gọi set thì Java sẽ tự động để trống (null hoặc 0)
-
-        // 2. Lấy danh sách hiện tại, nhét thêm đồ mới vào
+        // 3. Lấy danh sách hiện tại, nhét thêm đồ mới vào
         java.util.List<com.auction.model.Product> currentList = new java.util.ArrayList<>(productList);
         currentList.add(newProduct);
 
-        // 3. GỌI ĐIỆN CHO SERVER: Gửi bản cập nhật lên để Server Broadcast cho tất cả mọi người
+        // 4. Gửi dữ liệu mới cập nhật cho Server
         DataManager.saveProducts(currentList);
 
         // Xóa trắng ô nhập liệu cho đẹp
         newNameField.clear();
         newPriceField.clear();
 
-    } catch (Exception e) {
+    } catch (NumberFormatException e) {
+        // Bắt riêng lỗi nhập sai chữ vào ô giá tiền
         System.out.println("Vui lòng nhập đúng định dạng số cho giá tiền!");
+    } catch (Exception e) {
+        // Nếu có lỗi khác thì in ra dòng đỏ để mình còn biết đường sửa
+        e.printStackTrace();
     }
 }
+
+    @FXML
+    public void handleDeleteProduct() {
+        // 1. Lấy ra cái sản phẩm mà người dùng đang click chọn trên bảng
+        com.auction.model.Product selectedProduct = productTable.getSelectionModel().getSelectedItem();
+
+        // 2. Kiểm tra xem họ có thực sự chọn món nào không
+        if (selectedProduct != null) {
+            // Xóa món đó khỏi danh sách hiển thị
+            productList.remove(selectedProduct);
+
+            // Gửi danh sách mới (đã bị xóa mất 1 món) lên Server để lưu lại
+            java.util.List<com.auction.model.Product> currentList = new java.util.ArrayList<>(productList);
+            DataManager.saveProducts(currentList);
+
+        } else {
+            // 3. Nếu bấm Xóa mà chưa chọn món nào thì hiện bảng cảnh báo cực xịn
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
+            alert.setTitle("Cảnh báo");
+            alert.setHeaderText(null);
+            alert.setContentText("Vui lòng click chọn một sản phẩm trong bảng trước khi bấm nút Xóa!");
+            alert.showAndWait();
+        }
+    }
 
 // Hàm mở cửa sổ Pop-up
 private void openBidWindow(Product product) {

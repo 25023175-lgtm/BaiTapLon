@@ -7,12 +7,25 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="15.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uet.auction.LoginController">
+<!-- HỘP NGOÀI CÙNG: Chiếm toàn màn hình, nhận màu nền Gradient từ file styles.css -->
+<VBox alignment="CENTER" prefHeight="500.0" prefWidth="700.0" stylesheets="@styles.css" styleClass="root-background" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uet.auction.LoginController">
    <children>
-      <Label text="ĐĂNG NHẬP" />
-      <TextField fx:id="usernameField" promptText="Tên đăng nhập" />
-      <PasswordField fx:id="passwordField" promptText="Mật khẩu" />
-      <Button mnemonicParsing="false" onAction="#handleLogin" text="Đăng nhập" />
-      <Hyperlink fx:id="registerLink" onAction="#handleSwitchToRegister" text="Chưa có tài khoản ? Đăng kí ngay" />
+
+      <!-- HỘP BÊN TRONG: Bị giới hạn chiều rộng (maxWidth="400"), làm thẻ Card trắng đổ bóng -->
+      <VBox alignment="CENTER" maxWidth="400.0" spacing="20.0" styleClass="login-card">
+         <children>
+            <!-- Thêm chút style cho chữ ĐĂNG NHẬP to và in đậm -->
+            <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1877F2;" text="ĐĂNG NHẬP" />
+
+            <TextField fx:id="usernameField" prefHeight="40.0" promptText="Tên đăng nhập" style="-fx-font-size: 14px;" />
+            <PasswordField fx:id="passwordField" prefHeight="40.0" promptText="Mật khẩu" style="-fx-font-size: 14px;" />
+
+            <!-- Nút đăng nhập được tô màu xanh, chữ trắng giống Facebook -->
+            <Button mnemonicParsing="false" onAction="#handleLogin" prefHeight="45.0" prefWidth="400.0" style="-fx-background-color: #1877F2; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 8px; -fx-cursor: hand;" text="Đăng nhập" />
+
+            <Hyperlink fx:id="registerLink" onAction="#handleSwitchToRegister" style="-fx-font-size: 14px; -fx-text-fill: #1877F2;" text="Chưa có tài khoản? Đăng kí ngay" />
+         </children>
+      </VBox>
+
    </children>
 </VBox>
