@@ -14,7 +14,7 @@
          <children>
             <Label text="Hệ thống đấu giá UET">
                <graphic>
-                  <Button mnemonicParsing="false" text="Đăng xuất" />
+                  <Button mnemonicParsing="false" onAction="#handleLogout" text="Đăng xuất" />
                </graphic>
             </Label>
          </children>

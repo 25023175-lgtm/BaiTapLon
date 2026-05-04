@@ -4,6 +4,7 @@ module com.uet.auction {
     requires org.controlsfx.controls;
     requires net.synedra.validatorfx;
     requires java.desktop;
+    requires atlantafx.base;
 
     opens com.uet.auction to javafx.fxml;
     exports com.uet.auction;

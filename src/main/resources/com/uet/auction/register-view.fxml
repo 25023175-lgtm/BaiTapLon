@@ -8,15 +8,14 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
 
-
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="15.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uet.auction.RegisterController">
    <children>
       <Label styleClass="title-label" text="ĐĂNG KÍ TÀI KHOẢN" />
-      <TextField fx:id="regUsernameField" />
-      <PasswordField fx:id="regPasswordField" />
-      <PasswordField fx:id="confirmPasswordField" />
-      <TextField fx:id="emailField" />
-      <TextField fx:id="fullNameField" />
+      <TextField fx:id="regUsernameField" promptText="Tên đăng nhập" />
+      <PasswordField fx:id="regPasswordField" promptText="Mật khẩu" />
+      <PasswordField fx:id="confirmPasswordField" promptText="Xác nhận mật khẩu" />
+      <TextField fx:id="emailField" promptText="Họ và tên" />
+      <TextField fx:id="fullNameField" promptText="Email" />
       <ComboBox fx:id="roleComboBox" prefWidth="150.0" />
       <Button fx:id="handleRegister" mnemonicParsing="false" onAction="#handleRegister" text="Đăng kí" />
       <Hyperlink fx:id="handleBackToLogin" onAction="#handleBackToLogin" text="Đã có tài khoản? Đăng nhập ngay" />

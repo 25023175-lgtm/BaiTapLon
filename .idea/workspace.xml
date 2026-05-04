@@ -7,6 +7,11 @@
     <list default="true" id="3cdd559f-324e-495d-9afd-4b317b85caaa" name="Changes" comment="Hoàn thành UI đăng nhập, Đăng ký và kết nối SceneManager">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/DashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/DashboardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/MainApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/MainApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/uet/auction/dashboard-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/uet/auction/dashboard-view.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/uet/auction/register-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/uet/auction/register-view.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,53 +64,54 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.AuctionServer.executor&quot;: &quot;Run&quot;,
-    &quot;Application.MainApplication.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.All in auction.executor&quot;: &quot;Coverage&quot;,
-    &quot;JUnit.AuctionClosedExceptionTest.executor&quot;: &quot;Coverage&quot;,
-    &quot;JUnit.BidControllerTest.executor&quot;: &quot;Coverage&quot;,
-    &quot;JUnit.BidTest.executor&quot;: &quot;Coverage&quot;,
-    &quot;JUnit.DataManagerTest.executor&quot;: &quot;Coverage&quot;,
-    &quot;JUnit.InvalidBidExceptionTest.executor&quot;: &quot;Coverage&quot;,
-    &quot;JUnit.MainApplicationTest.executor&quot;: &quot;Coverage&quot;,
-    &quot;JUnit.ProductTest.executor&quot;: &quot;Coverage&quot;,
-    &quot;JUnit.UserTest.executor&quot;: &quot;Coverage&quot;,
-    &quot;JUnit.com.auction.model in auction.executor&quot;: &quot;Coverage&quot;,
-    &quot;JUnit.com.uet.auction in auction.executor&quot;: &quot;Coverage&quot;,
-    &quot;JUnit.com.uet.auction.*|com.auction.*.executor&quot;: &quot;Coverage&quot;,
-    &quot;JUnit.com.uet.auction.*|com.auction.common*.executor&quot;: &quot;Coverage&quot;,
-    &quot;Maven.auction [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.auction [compile].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.JavaFX&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.AuctionServer.executor": "Run",
+    "Application.MainApplication.executor": "Run",
+    "JUnit.All in auction.executor": "Coverage",
+    "JUnit.AuctionClosedExceptionTest.executor": "Coverage",
+    "JUnit.BidControllerTest.executor": "Coverage",
+    "JUnit.BidTest.executor": "Coverage",
+    "JUnit.DataManagerTest.executor": "Coverage",
+    "JUnit.InvalidBidExceptionTest.executor": "Coverage",
+    "JUnit.MainApplicationTest.executor": "Coverage",
+    "JUnit.ProductTest.executor": "Coverage",
+    "JUnit.UserTest.executor": "Coverage",
+    "JUnit.com.auction.model in auction.executor": "Coverage",
+    "JUnit.com.uet.auction in auction.executor": "Coverage",
+    "JUnit.com.uet.auction.*|com.auction.*.executor": "Coverage",
+    "JUnit.com.uet.auction.*|com.auction.common*.executor": "Coverage",
+    "Maven.auction [clean].executor": "Run",
+    "Maven.auction [compile].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "cidr.known.project.marker": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "git-widget-placeholder": "main",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.JavaFX",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
@@ -240,7 +246,7 @@
       <workItem from="1776191574635" duration="8076000" />
       <workItem from="1777019404768" duration="31000" />
       <workItem from="1777097885925" duration="22521000" />
-      <workItem from="1777885938306" duration="768000" />
+      <workItem from="1777885938306" duration="3685000" />
     </task>
     <task id="LOCAL-00001" summary="Hoàn thành UI đăng nhập, Đăng ký và kết nối SceneManager">
       <option name="closed" value="true" />

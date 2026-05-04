@@ -183,5 +183,18 @@ private void openBidWindow(Product product) {
         });
     }
 
+    @FXML
+    public void handleLogout(ActionEvent event) {
+        // 1. Xóa thông tin phiên làm việc hiện tại
+        SessionManager.getInstance().logout();
+        System.out.println("Đã xóa thông tin user, chuẩn bị đăng xuất...");
+
+        // 2. Ngắt kết nối socket (nếu DataManager có hàm ngắt kết nối thì bỏ comment dòng dưới)
+        // DataManager.stopRealtimeListener();
+
+        // 3. Chuyển màn hình về trang đăng nhập
+        SceneManager.switchScene("login-view.fxml", "Hệ thống Đấu giá UET - Đăng nhập");
+    }
+
 
 }
