@@ -86,6 +86,29 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <!-- Sử dụng bộ quy tắc chuẩn của Google (Rất khắt khe về đặt tên và format) -->
+                    <configLocation>google_checks.xml</configLocation>
+                    <consoleOutput>true</consoleOutput>
+                    <!-- QUAN TRỌNG NHẤT: Bật thành true để ép lỗi. Nếu code sai quy tắc -> Build thất bại! -->
+                    <failsOnError>true</failsOnError>
+                    <linkXRef>false</linkXRef>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <!-- Cho nó chạy ngay ở pha đầu tiên, sai quy tắc là cấm chạy test luôn -->
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>

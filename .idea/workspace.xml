@@ -5,20 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3cdd559f-324e-495d-9afd-4b317b85caaa" name="Changes" comment="Hoàn thành UI đăng nhập, Đăng ký và kết nối SceneManager">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/auction/common/AuctionClosedException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/auction/common/InvalidBidException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/auction/common/AuctionClosedExceptionTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/auction/common/InvalidBidExceptionTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/auction/model/BidTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/auction/model/ProductTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/auction/model/UserTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/uet/auction/BidControllerTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/uet/auction/DataManagerTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/uet/auction/MainApplicationTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/model/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/model/Product.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/BidController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/BidController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/users.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +23,7 @@
     <option name="myAddOrReplace" value="0" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="30" />
+    <option name="cachedIndexableFilesCount" value="45" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -129,6 +117,12 @@
     </key>
   </component>
   <component name="RunManager" selected="Application.MainApplication">
+    <configuration default="true" type="AppleRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" IS_LOCATION_SIMULATION_SUPPORTED="false" IS_LOCATION_SIMULATION_ALLOWED="true" APPLICATION_LANGUAGE="IDELaunchSchemeLanguageUseSystemLanguage" APPLICATION_REGION="" DEVELOPMENT_TEAM="${TEAM_ID}" MAKE_ACTIVE="TRUE" SHOULD_DEBUG_EXTENSIONS="false">
+      <embedded_app_extension_list />
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="AuctionServer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.uet.auction.AuctionServer" />
       <module name="auction" />
@@ -151,11 +145,6 @@
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="Application" factoryName="Application">
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -251,6 +240,7 @@
       <workItem from="1776191574635" duration="8076000" />
       <workItem from="1777019404768" duration="31000" />
       <workItem from="1777097885925" duration="22521000" />
+      <workItem from="1777885938306" duration="768000" />
     </task>
     <task id="LOCAL-00001" summary="Hoàn thành UI đăng nhập, Đăng ký và kết nối SceneManager">
       <option name="closed" value="true" />
