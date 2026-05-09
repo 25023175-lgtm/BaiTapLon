@@ -57,10 +57,44 @@ public class AuctionServer {
 
     // synchronized: Đảm bảo tại 1 thời điểm, chỉ có 1 luồng được phép chạy vào đây
     public static synchronized void updateAndSaveData(List<Product> newProducts) {
-        // Cập nhật lên RAM
+
+
+        // 1. TÍNH NĂNG ANTI-SNIPING
+
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+
+        // Dò xem trong danh sách mới gửi lên, món đồ nào vừa được trả giá
+        if (sharedProductList != null) {
+            for (Product newP : newProducts) {
+                for (Product oldP : sharedProductList) {
+
+                    // So sánh để tìm đúng món đồ đó (dựa vào tên)
+                    if (newP.getName().equals(oldP.getName())) {
+
+                        // Nếu giá hiện tại MỚI lớn hơn giá CŨ -> Tức là có người vừa bấm Bid!
+                        if (newP.getCurrentPrice() > oldP.getCurrentPrice()) {
+
+                            // Kiểm tra thời gian còn lại
+                            java.time.Duration timeLeft = java.time.Duration.between(now, newP.getEndTime());
+
+                            // Nếu thời gian còn lại <= 60 giây và chưa hết hạn (> 0)
+                            if (timeLeft.getSeconds() <= 60 && timeLeft.getSeconds() > 0) {
+
+                                // GIA HẠN THÊM 5 PHÚT!
+                                newP.setEndTime(newP.getEndTime().plusMinutes(5));
+                                System.out.println("[SERVER - ANTI-SNIPING] Bắn tỉa! Đã gia hạn thêm 5 phút cho món: " + newP.getName());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // ==================================================
+
+        // 2. Cập nhật lên RAM
         sharedProductList = newProducts;
 
-        // Lưu ngay xuống két sắt (ổ cứng) của Server
+        // 3. Lưu ngay xuống két sắt (ổ cứng) của Server
         try (java.io.ObjectOutputStream oos = new java.io.ObjectOutputStream(new java.io.FileOutputStream("server_products.dat"))) {
             oos.writeObject(new ArrayList<>(sharedProductList));
             System.out.println("[SERVER] Đã đồng bộ và lưu an toàn xuống ổ cứng (Chống xung đột)!");
@@ -68,17 +102,16 @@ public class AuctionServer {
             System.err.println("[SERVER LỖI] Lỗi khi lưu két sắt: " + e.getMessage());
         }
 
-        // 2. BROADCAST: Nhắn tin cho toàn bộ Client đang mở app để nhảy số ngay lập tức!
+        // 4. BROADCAST: Nhắn tin cho toàn bộ Client đang mở app để nhảy số ngay lập tức!
         for (java.io.ObjectOutputStream out : onlineClients) {
             try {
                 out.writeObject("UPDATE"); // Gửi mật mã báo hiệu
-                out.writeObject(new ArrayList<>(sharedProductList)); // Gửi danh sách mới
+                out.writeObject(new ArrayList<>(sharedProductList)); // Gửi danh sách mới (đã được cộng giờ nếu có)
                 out.flush();
             } catch (Exception e) {
                 // Nếu Client nào lỡ tắt app, kệ nó, tí nữa xóa sau
             }
         }
-        System.out.println("[SERVER] Đã Broadcast giá mới cho tất cả các máy!");
+        System.out.println("[SERVER] Đã Broadcast giá và thời gian mới cho tất cả các máy!");
     }
-
 }

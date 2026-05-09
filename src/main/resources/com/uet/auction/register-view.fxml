@@ -14,8 +14,8 @@
       <TextField fx:id="regUsernameField" promptText="Tên đăng nhập" />
       <PasswordField fx:id="regPasswordField" promptText="Mật khẩu" />
       <PasswordField fx:id="confirmPasswordField" promptText="Xác nhận mật khẩu" />
-      <TextField fx:id="emailField" promptText="Họ và tên" />
-      <TextField fx:id="fullNameField" promptText="Email" />
+      <TextField fx:id="emailField" promptText="Email hoặc Số điện thoại" />
+      <TextField fx:id="fullNameField" promptText="Họ và tên" />
       <ComboBox fx:id="roleComboBox" prefWidth="150.0" />
       <Button fx:id="handleRegister" mnemonicParsing="false" onAction="#handleRegister" text="Đăng kí" />
       <Hyperlink fx:id="handleBackToLogin" onAction="#handleBackToLogin" text="Đã có tài khoản? Đăng nhập ngay" />

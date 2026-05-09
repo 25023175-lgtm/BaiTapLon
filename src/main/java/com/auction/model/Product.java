@@ -16,6 +16,9 @@ public class Product implements Serializable {
     private String status; // ACTIVE, ENDED, CANCELLED
     private int sellerId;
     private String sellerName;
+    private int bidCount;
+
+
 
     public Product() {}
 
@@ -30,6 +33,7 @@ public class Product implements Serializable {
         this.endTime = endTime;
         this.status = "ACTIVE";
         this.sellerId = sellerId;
+        this.bidCount = 0;
     }
 
     // Getters & Setters
@@ -65,6 +69,13 @@ public class Product implements Serializable {
 
     public String getSellerName() { return sellerName; }
     public void setSellerName(String sellerName) { this.sellerName = sellerName; }
+
+    public int getBidCount() {
+        return bidCount;
+    }
+    public void setBidCount(int bidCount) {
+        this.bidCount = bidCount;
+    }
 
     @Override
     public String toString() {
