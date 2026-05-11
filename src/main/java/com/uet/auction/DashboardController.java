@@ -7,10 +7,12 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.application.Platform;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -318,23 +320,27 @@ public class DashboardController implements Initializable {
         SceneManager.switchScene("login-view.fxml", "Hệ thống Đấu giá UET - Đăng nhập");
     }
 
-    // Hàm hiển thị chi tiết cho Người mua (Đã fix lỗi hiển thị và đếm ngược Real-time)
+    // Hàm hiển thị chi tiết cho
     private void showBidderProductDetail(Product product) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Thông tin sản phẩm");
         alert.setHeaderText("Mặt hàng: " + product.getName().toUpperCase());
 
-        // 1. Tạo một cái Label xịn xò để thay thế vùng hiển thị mặc định
+        // 1. Tạo một cái Label để thay thế vùng hiển thị mặc định
         javafx.scene.control.Label contentLabel = new javafx.scene.control.Label();
         contentLabel.setStyle("-fx-font-size: 14px;");
         contentLabel.setWrapText(true);
         contentLabel.setMinHeight(javafx.scene.layout.Region.USE_PREF_SIZE); // Ép Label tự phình to theo chữ
         alert.getDialogPane().setContent(contentLabel);
 
-        // 2. Setup nút bấm
+        // 2. Setup nút bấm (Đã thêm Xem biểu đồ)
         ButtonType btnClose = new ButtonType("Đóng", javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE);
+        // Dùng APPLY để ép nó đứng sát nút OK_DONE bên góc phải
+        ButtonType btnViewChart = new ButtonType("Xem biểu đồ", javafx.scene.control.ButtonBar.ButtonData.APPLY);
         ButtonType btnBid = new ButtonType("Ra giá ngay!", javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
-        alert.getButtonTypes().setAll(btnBid, btnClose);
+
+        // Nạp cả 3 nút vào bảng
+        alert.getButtonTypes().setAll(btnClose, btnViewChart, btnBid);
 
         // 3. Đóng gói logic tính toán vào một khối lệnh (Runnable) để tái sử dụng
         Runnable updateTimeLogic = () -> {
@@ -372,7 +378,7 @@ public class DashboardController implements Initializable {
             // Đổ chữ vào Label
             contentLabel.setText(content);
 
-            // Khóa nút nếu hết giờ
+            // Khóa nút Ra giá nếu hết giờ (vẫn cho phép xem biểu đồhhhhhhhhh)
             javafx.scene.Node bidButton = alert.getDialogPane().lookupButton(btnBid);
             if (bidButton != null) {
                 bidButton.setDisable(isEnded);
@@ -395,11 +401,49 @@ public class DashboardController implements Initializable {
         alert.setOnHidden(e -> timeline.stop()); // Tắt bảng thì dừng đồng hồ
         alert.getDialogPane().setMinWidth(420);
 
-        // Hiển thị bảng
+        // 6. Hiển thị bảng và Xử lý sự kiện bấm nút
         java.util.Optional<ButtonType> result = alert.showAndWait();
 
-        if (result.isPresent() && result.get() == btnBid) {
-            openBidWindow(product);
+        if (result.isPresent()) {
+            if (result.get() == btnBid) {
+                openBidWindow(product); // Chuyển sang màn hình ra giá
+            } else if (result.get() == btnViewChart) {
+                showPriceHistoryChart(product); // Bật popup vẽ biểu đồ Line Chart lên
+            }
         }
+    }
+
+    private void showPriceHistoryChart(Product product) {
+        Stage stage = new Stage();
+        stage.setTitle("Lịch sử giá: " + product.getName());
+
+        // 1. Thiết lập trục tọa độ
+        // Trục X: Số thứ tự lượt Bid
+        final javafx.scene.chart.NumberAxis xAxis = new javafx.scene.chart.NumberAxis();
+        xAxis.setLabel("Lượt đấu giá (0 = Giá gốc)");
+
+        // Trục Y: Giá tiền
+        final javafx.scene.chart.NumberAxis yAxis = new javafx.scene.chart.NumberAxis();
+        yAxis.setLabel("Giá (VND)");
+        yAxis.setForceZeroInRange(false); // Để biểu đồ tập trung vào vùng giá biến động
+
+        // 2. Tạo LineChart
+        final javafx.scene.chart.LineChart<Number, Number> lineChart = new javafx.scene.chart.LineChart<>(xAxis, yAxis);
+        lineChart.setTitle("Biểu đồ tăng trưởng giá - " + product.getName());
+
+        // 3. Đổ dữ liệu từ priceHistory vào Series
+        javafx.scene.chart.XYChart.Series<Number, Number> series = new javafx.scene.chart.XYChart.Series<>();
+        series.setName("Diễn biến giá");
+
+        List<Double> history = product.getPriceHistory();
+        for (int i = 0; i < history.size(); i++) {
+            series.getData().add(new javafx.scene.chart.XYChart.Data<>(i, history.get(i)));
+        }
+
+        // 4. Hiển thị lên màn hình
+        lineChart.getData().add(series);
+        Scene scene = new Scene(lineChart, 600, 400);
+        stage.setScene(scene);
+        stage.show();
     }
 }

@@ -6,18 +6,46 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="15.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uet.auction.RegisterController">
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="700.0" stylesheets="@styles.css" styleClass="root-background" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uet.auction.RegisterController">
    <children>
-      <Label styleClass="title-label" text="ĐĂNG KÍ TÀI KHOẢN" />
-      <TextField fx:id="regUsernameField" promptText="Tên đăng nhập" />
-      <PasswordField fx:id="regPasswordField" promptText="Mật khẩu" />
-      <PasswordField fx:id="confirmPasswordField" promptText="Xác nhận mật khẩu" />
-      <TextField fx:id="emailField" promptText="Email hoặc Số điện thoại" />
-      <TextField fx:id="fullNameField" promptText="Họ và tên" />
-      <ComboBox fx:id="roleComboBox" prefWidth="150.0" />
-      <Button fx:id="handleRegister" mnemonicParsing="false" onAction="#handleRegister" text="Đăng kí" />
-      <Hyperlink fx:id="handleBackToLogin" onAction="#handleBackToLogin" text="Đã có tài khoản? Đăng nhập ngay" />
+
+      <VBox alignment="CENTER" maxWidth="400.0" spacing="15.0" styleClass="login-card">
+         <children>
+            <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1877F2;" text="ĐĂNG KÝ TÀI KHOẢN" />
+
+            <TextField fx:id="regUsernameField" prefHeight="40.0" promptText="Tên đăng nhập" style="-fx-font-size: 14px;" />
+
+            <StackPane alignment="CENTER_RIGHT">
+               <children>
+                  <PasswordField fx:id="regPasswordField" prefHeight="40.0" promptText="Mật khẩu" style="-fx-font-size: 14px; -fx-padding: 0 40 0 10;" />
+                  <TextField fx:id="regVisiblePasswordField" prefHeight="40.0" promptText="Mật khẩu" style="-fx-font-size: 14px; -fx-padding: 0 40 0 10;" visible="false" />
+                  <ToggleButton fx:id="toggleRegPasswordBtn" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 16px;" text="👁" />
+               </children>
+            </StackPane>
+
+            <StackPane alignment="CENTER_RIGHT">
+               <children>
+                  <PasswordField fx:id="confirmPasswordField" prefHeight="40.0" promptText="Xác nhận mật khẩu" style="-fx-font-size: 14px; -fx-padding: 0 40 0 10;" />
+                  <TextField fx:id="confirmVisibleField" prefHeight="40.0" promptText="Xác nhận mật khẩu" style="-fx-font-size: 14px; -fx-padding: 0 40 0 10;" visible="false" />
+                  <ToggleButton fx:id="toggleConfirmBtn" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 16px;" text="👁" />
+               </children>
+            </StackPane>
+
+            <TextField fx:id="emailField" prefHeight="40.0" promptText="Email hoặc Số điện thoại" style="-fx-font-size: 14px;" />
+
+            <TextField fx:id="fullNameField" prefHeight="40.0" promptText="Họ và tên" style="-fx-font-size: 14px;" />
+
+            <ComboBox fx:id="roleComboBox" prefHeight="40.0" prefWidth="400.0" style="-fx-font-size: 14px;" />
+
+            <Button fx:id="handleRegister" mnemonicParsing="false" onAction="#handleRegister" prefHeight="45.0" prefWidth="400.0" style="-fx-background-color: #1877F2; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 8px; -fx-cursor: hand;" text="Đăng ký" />
+
+            <Hyperlink fx:id="handleBackToLogin" onAction="#handleBackToLogin" style="-fx-font-size: 14px; -fx-text-fill: #1877F2;" text="Đã có tài khoản? Đăng nhập ngay" />
+         </children>
+      </VBox>
+
    </children>
 </VBox>

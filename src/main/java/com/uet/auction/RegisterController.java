@@ -7,33 +7,62 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 
 public class RegisterController {
 
-    @FXML
-    private TextField regUsernameField;
+    @FXML private TextField regUsernameField;
 
-    @FXML
-    private PasswordField regPasswordField;
+    // --- CỤM MẬT KHẨU CHÍNH ---
+    @FXML private PasswordField regPasswordField;
+    @FXML private TextField regVisiblePasswordField;
+    @FXML private ToggleButton toggleRegPasswordBtn;
 
-    @FXML
-    private PasswordField confirmPasswordField;
+    // --- CỤM XÁC NHẬN MẬT KHẨU ---
+    @FXML private PasswordField confirmPasswordField;
+    @FXML private TextField confirmVisibleField;
+    @FXML private ToggleButton toggleConfirmBtn;
 
     @FXML private TextField emailField;
     @FXML private TextField fullNameField;
-
-    @FXML
-    private ComboBox<String> roleComboBox;
+    @FXML private ComboBox<String> roleComboBox;
 
     @FXML
     public void initialize() {
+        // Thiết lập vai trò
         roleComboBox.getItems().addAll("Bidder", "Seller");
         roleComboBox.getSelectionModel().selectFirst();
+
+        // Đồng bộ 2 chiều và cài đặt nút con mắt cho cả 2 ô
+
+        // 1. Ô Mật khẩu chính
+        regVisiblePasswordField.textProperty().bindBidirectional(regPasswordField.textProperty());
+        setupPasswordToggle(toggleRegPasswordBtn, regPasswordField, regVisiblePasswordField);
+
+        // 2. Ô Xác nhận mật khẩu
+        confirmVisibleField.textProperty().bindBidirectional(confirmPasswordField.textProperty());
+        setupPasswordToggle(toggleConfirmBtn, confirmPasswordField, confirmVisibleField);
+    }
+
+    // Hàm dùng chung để xử lý ẩn/hiện mật khẩu
+    private void setupPasswordToggle(ToggleButton toggleBtn, PasswordField hiddenField, TextField visibleField) {
+        toggleBtn.setOnAction(event -> {
+            if (toggleBtn.isSelected()) {
+                visibleField.setVisible(true);
+                hiddenField.setVisible(false);
+                toggleBtn.setText("🙈"); // Nhắm mắt
+            } else {
+                visibleField.setVisible(false);
+                hiddenField.setVisible(true);
+                toggleBtn.setText("👁"); // Mở mắt
+            }
+        });
     }
 
     @FXML
     private void handleRegister(ActionEvent event) {
         // Dùng trim() để cắt khoảng trắng thừa ở 2 đầu (trừ mật khẩu)
+        // Nhờ tính năng bindBidirectional, getText() từ ô ẩn vẫn chuẩn 100% dù người dùng gõ ở ô hiện
         String username = regUsernameField.getText().trim();
         String password = regPasswordField.getText();
         String confirmPassword = confirmPasswordField.getText();
@@ -73,7 +102,7 @@ public class RegisterController {
             return;
         }
 
-        // 5. KIỂM TRA ĐIỀU KIỆN 4: EMAIL HOẶC SỐ ĐIỆN THOẠI (Đã gỡ bỏ bắt buộc @gmail.com)
+        // 5. KIỂM TRA ĐIỀU KIỆN 4: EMAIL HOẶC SỐ ĐIỆN THOẠI
         boolean isEmail = email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
         boolean isPhone = email.matches("^0\\d{9}$");
 
@@ -85,19 +114,16 @@ public class RegisterController {
 
         // =========================================================
         // 6. KIỂM TRA TRÙNG LẶP
-        // Đọc danh sách user từ file lên để dò
         java.util.List<User> existingUsers = DataManager.loadUsers();
 
         if (existingUsers != null) {
             for (User u : existingUsers) {
-                // Kiểm tra trùng Họ Tên VÀ trùng Vai trò
                 if (u.getFullName().equalsIgnoreCase(fullName) && u.getRole().equalsIgnoreCase(role)) {
                     showErrorAlert("Người dùng đã tồn tại",
                             "Hệ thống ghi nhận bạn đã có một tài khoản với vai trò " + role + " rồi!");
                     return;
                 }
 
-                // Kiểm tra trùng Email/SĐT VÀ trùng Vai trò
                 if (u.getEmail().equalsIgnoreCase(email) && u.getRole().equalsIgnoreCase(role)) {
                     showErrorAlert("Thông tin liên hệ đã được sử dụng",
                             "Email/Số điện thoại này đã được dùng cho một tài khoản " + role + " khác!");
@@ -127,21 +153,18 @@ public class RegisterController {
         // Đăng ký thành công thì chuyển về màn Login
         SceneManager.switchScene("login-view.fxml", "Hệ thống Đấu giá - Đăng nhập");
     }
+
     @FXML
     private void handleBackToLogin(ActionEvent event) {
-        // quay ngược lại màn hình Đăng nhập
         SceneManager.switchScene("login-view.fxml", "Hệ thống Đấu giá - Đăng nhập");
     }
 
-    // Hàm hỗ trợ kiểm tra viết hoa chữ cái đầu
     private boolean isValidFullName(String name) {
         if (name == null || name.trim().isEmpty()) return false;
 
-        // Cắt tên thành các từ cách nhau bởi dấu cách
         String[] words = name.trim().split("\\s+");
         for (String word : words) {
             if (word.isEmpty()) continue;
-            // Kiểm tra chữ cái đầu tiên của mỗi từ xem có phải in hoa không
             if (!Character.isUpperCase(word.charAt(0))) {
                 return false;
             }
@@ -149,10 +172,8 @@ public class RegisterController {
         return true;
     }
 
-    // Hàm hiển thị bảng báo lỗi
     private void showErrorAlert(String title, String content) {
         javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
-        alert.setTitle(title);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(content);

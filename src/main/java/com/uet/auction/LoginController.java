@@ -5,19 +5,52 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 
 public class LoginController {
 
     @FXML
     private TextField usernameField;
 
+    // Đã sửa tên biến để khớp với FXML mới
     @FXML
-    private PasswordField passwordField;
+    private PasswordField hiddenPasswordField;
+
+    // Khai báo thêm 2 biến mới cho tính năng "con mắt"
+    @FXML
+    private TextField visiblePasswordField;
+
+    @FXML
+    private ToggleButton togglePasswordBtn;
+
+    // HÀM KHỞI TẠO: Chạy ngay khi màn hình vừa mở lên
+    @FXML
+    public void initialize() {
+        // 1. Đồng bộ 2 ô text
+        visiblePasswordField.textProperty().bindBidirectional(hiddenPasswordField.textProperty());
+
+        // 2. Bắt sự kiện click vào con mắt
+        togglePasswordBtn.setOnAction(event -> {
+            if (togglePasswordBtn.isSelected()) {
+                // Đang bấm xuống -> Mở mắt -> Hiện chữ, Ẩn dấu chấm
+                visiblePasswordField.setVisible(true);
+                hiddenPasswordField.setVisible(false);
+                togglePasswordBtn.setText("🙈"); // Icon nhắm mắt
+            } else {
+                // Nhả ra -> Nhắm mắt -> Ẩn chữ, Hiện dấu chấm
+                visiblePasswordField.setVisible(false);
+                hiddenPasswordField.setVisible(true);
+                togglePasswordBtn.setText("👁");  // Icon mở mắt
+            }
+        });
+    }
 
     @FXML
     private void handleLogin(ActionEvent event) {
         String username = usernameField.getText();
-        String password = passwordField.getText();
+
+
+        String password = hiddenPasswordField.getText();
 
         // 1. Kiểm tra bỏ trống
         if (username.isEmpty() || password.isEmpty()) {

@@ -18,6 +18,9 @@ public class Product implements Serializable {
     private String sellerName;
     private int bidCount;
 
+    // Danh sách lưu lại các mốc giá, dùng để vẽ biểu đồ
+    private java.util.List<Double> priceHistory = new java.util.ArrayList<>();
+
 
 
     public Product() {}
@@ -34,6 +37,7 @@ public class Product implements Serializable {
         this.status = "ACTIVE";
         this.sellerId = sellerId;
         this.bidCount = 0;
+        this.priceHistory.add(startPrice);
     }
 
     // Getters & Setters
@@ -75,6 +79,25 @@ public class Product implements Serializable {
     }
     public void setBidCount(int bidCount) {
         this.bidCount = bidCount;
+    }
+
+    public java.util.List<Double> getPriceHistory() {
+        // Nếu đọc đồ từ file cũ lên bị null -> Tự tạo danh sách mới
+        if (this.priceHistory == null) {
+            this.priceHistory = new java.util.ArrayList<>();
+            this.priceHistory.add(this.startPrice); // Cắm mốc giá gốc vào đầu tiên
+        }
+        return priceHistory;
+    }
+
+    // Hàm này sẽ được gọi mỗi khi có người đặt giá thành công
+    public void addPriceToHistory(double newPrice) {
+        // Đề phòng trường hợp đồ cũ chưa có danh sách
+        if (this.priceHistory == null) {
+            this.priceHistory = new java.util.ArrayList<>();
+            this.priceHistory.add(this.startPrice);
+        }
+        this.priceHistory.add(newPrice);
     }
 
     @Override

@@ -10,9 +10,9 @@
       <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/model/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/model/Product.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/AuctionServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/AuctionServer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/DashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/DashboardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/LoginController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/RegisterController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/RegisterController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/SceneManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/SceneManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/uet/auction/dashboard-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/uet/auction/dashboard-view.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/uet/auction/login-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/uet/auction/login-view.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/com/uet/auction/register-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/uet/auction/register-view.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/users.dat" beforeDir="false" afterPath="$PROJECT_DIR$/users.dat" afterDir="false" />
     </list>
@@ -249,7 +249,7 @@
       <workItem from="1777019404768" duration="31000" />
       <workItem from="1777097885925" duration="22521000" />
       <workItem from="1777885938306" duration="19355000" />
-      <workItem from="1778252774340" duration="2542000" />
+      <workItem from="1778252774340" duration="5858000" />
     </task>
     <task id="LOCAL-00001" summary="Hoàn thành UI đăng nhập, Đăng ký và kết nối SceneManager">
       <option name="closed" value="true" />

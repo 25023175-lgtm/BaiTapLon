@@ -73,6 +73,11 @@ public class AuctionServer {
 
                         // Nếu giá hiện tại MỚI lớn hơn giá CŨ -> Tức là có người vừa bấm Bid!
                         if (newP.getCurrentPrice() > oldP.getCurrentPrice()) {
+                            // 1. Lưu cái giá mới này vào sổ lịch sử của sản phẩm để sau này vẽ biểu đồ
+                            newP.addPriceToHistory(newP.getCurrentPrice());
+
+                            // 2. Tăng số lượt đấu giá lên 1 (Phục vụ cho ô Thống kê số 3)
+                            newP.setBidCount(newP.getBidCount() + 1);
 
                             // Kiểm tra thời gian còn lại
                             java.time.Duration timeLeft = java.time.Duration.between(now, newP.getEndTime());
