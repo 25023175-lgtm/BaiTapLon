@@ -59,29 +59,43 @@ public class DataManager {
     // =========================================
     public static java.util.List<com.auction.model.Product> loadProducts() {
         java.util.List<com.auction.model.Product> products = new java.util.ArrayList<>();
-        String sql = "SELECT * FROM products";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+        // [MỚI] Câu lệnh JOIN lấy toàn bộ thông tin sản phẩm VÀ thông tin người bán
+        String sql = "SELECT p.*, u.full_name, u.email " +
+                "FROM products p " +
+                "LEFT JOIN users u ON p.seller_username = u.id";
+
+        try (java.sql.Connection conn = DatabaseConnection.getConnection();
+             java.sql.PreparedStatement pstmt = conn.prepareStatement(sql);
+             java.sql.ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
+                // Khắc phục ID người bán
+                int sellerId = 0;
+                try {
+                    sellerId = Integer.parseInt(rs.getString("seller_username"));
+                } catch (NumberFormatException ignored) {}
+
                 com.auction.model.Product p = new com.auction.model.Product(
                         rs.getString("name"),
                         rs.getString("description"),
                         rs.getDouble("start_price"),
                         rs.getDouble("buy_now_price"),
                         rs.getTimestamp("end_time").toLocalDateTime(),
-                        0    // sellerId tạm thời
+                        sellerId
                 );
 
                 p.setId(rs.getInt("id"));
                 p.setCurrentPrice(rs.getDouble("current_price"));
                 p.setBidCount(rs.getInt("bid_count"));
 
+                // [MỚI] Gán Tên và Email nhặt được từ bảng users
+                p.setSellerName(rs.getString("full_name"));
+                p.setSellerEmail(rs.getString("email"));
+
                 products.add(p);
             }
-        } catch (SQLException e) {
+        } catch (java.sql.SQLException e) {
             System.out.println(">> Lỗi khi tải danh sách Sản phẩm từ DB: " + e.getMessage());
         }
         return products;
@@ -130,23 +144,29 @@ public class DataManager {
         }
     }
 
+    // HÀM CẬP NHẬT GIÁ VÀ THỜI GIAN SẢN PHẨM (Đã nâng cấp Anti-Sniping)
     public static void updateProduct(com.auction.model.Product product) {
-        String sql = "UPDATE products SET current_price = ?, bid_count = ? WHERE id = ?";
+        // [MỚI] Thêm end_time = ? vào câu lệnh SQL
+        String sql = "UPDATE products SET current_price = ?, bid_count = ?, end_time = ? WHERE id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (java.sql.Connection conn = DatabaseConnection.getConnection();
+             java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setDouble(1, product.getCurrentPrice());
-            pstmt.setInt(2, product.getBidCount());
-            pstmt.setInt(3, product.getId());
+            pstmt.setInt(2, product.getBidCount()); // Cập nhật số lượt đấu giá
+
+            // Lưu thời gian kết thúc mới (nếu có cộng giờ thì nó sẽ lưu giờ mới)
+            pstmt.setTimestamp(3, java.sql.Timestamp.valueOf(product.getEndTime()));
+
+            pstmt.setInt(4, product.getId());
 
             pstmt.executeUpdate();
-            System.out.println(">> Đã cập nhật giá mới cho Sản phẩm ID [" + product.getId() + "]");
+            System.out.println(">> Đã cập nhật giá & thời gian mới cho Sản phẩm ID [" + product.getId() + "]");
 
-            // [MỚI] BÁO CHO SERVER BIẾT VỪA CÓ BIẾN ĐỘNG GIÁ
+            // Báo cho Server phát loa cho người khác
             notifyServer();
 
-        } catch (SQLException e) {
+        } catch (java.sql.SQLException e) {
             System.out.println(">> Lỗi khi cập nhật giá Sản phẩm: " + e.getMessage());
         }
     }

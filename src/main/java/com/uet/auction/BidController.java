@@ -9,6 +9,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import com.auction.common.AuctionClosedException;
 import com.auction.common.InvalidBidException;
+import java.time.LocalDateTime;
+import java.time.Duration;
 
 public class BidController {
 
@@ -18,85 +20,76 @@ public class BidController {
 
     private Product currentProduct;
 
-    // 1. Hàm này dùng để NHẬN dữ liệu từ màn hình Dashboard ném sang
+    // 1. Nhận dữ liệu từ Dashboard
     public void setProductData(Product product) {
         this.currentProduct = product;
         productNameLabel.setText("Đang đấu giá: " + product.getName());
 
-        // Hiển thị giá hiện tại đẹp mắt
         String formattedPrice = String.format("%,.0f", product.getCurrentPrice()).replace(",", ".");
         currentPriceLabel.setText("Giá hiện tại: " + formattedPrice + " VNĐ");
     }
 
-    // 2. Xử lý khi bấm nút "Ra giá"
+    // 2. Xử lý Ra giá
     @FXML
-     void handlePlaceBid(ActionEvent event) {
+    void handlePlaceBid(ActionEvent event) {
         try {
-            // Lấy số tiền người dùng nhập
             double bidAmount = Double.parseDouble(bidAmountField.getText());
 
-            // Luật đấu giá: Tiền đưa ra phải lớn hơn giá hiện tại
-            // 1. BẮT LỖI 1: Nếu phiên đấu giá không còn chữ "ACTIVE" (Đang đấu giá)
+            // --- KIỂM TRA LUẬT ĐẤU GIÁ ---
+            // Kiểm tra trạng thái
             if (currentProduct.getStatus() != null && !currentProduct.getStatus().equals("ACTIVE")) {
                 throw new AuctionClosedException("Món đồ này đã chốt đơn, không thể ra giá thêm!");
             }
 
-            // 2. BẮT LỖI 2: Nếu tiền ra giá nhỏ hơn hoặc bằng giá hiện tại
+            // Kiểm tra giá tiền
             if (bidAmount <= currentProduct.getCurrentPrice()) {
                 throw new InvalidBidException("Số tiền đấu giá phải cao hơn giá hiện tại!");
             }
 
-            // Cập nhật giá mới vào sản phẩm
+            // --- THỰC HIỆN CẬP NHẬT DỮ LIỆU ---
+
+            // 1. Cập nhật giá mới và số lượt Bid trong RAM
             currentProduct.setCurrentPrice(bidAmount);
+            currentProduct.setBidCount(currentProduct.getBidCount() + 1);
 
+            // 2. LOGIC ANTI-SNIPING (CHỐNG BẮN TỈA)
+            LocalDateTime now = LocalDateTime.now();
+            Duration timeLeft = Duration.between(now, currentProduct.getEndTime());
 
-            try {
-                // 1. Tải danh sách mới nhất từ Server về
-                java.util.List<com.auction.model.Product> allProducts = DataManager.loadProducts();
-
-                // 2. Tìm đúng món đồ này trong kho và chốt giá mới
-                for (com.auction.model.Product p : allProducts) {
-                    if (p.getName().equals(currentProduct.getName())) {
-                        p.setCurrentPrice(bidAmount);
-                        break;
-                    }
-                }
-
-                // 3. Gửi danh sách đã chốt giá lên Server để Broadcast
-                // Cập nhật giá mới cho biến currentProduct hiện tại
-                currentProduct.setCurrentPrice(bidAmount);
-
-
-                DataManager.updateProduct(currentProduct);
-                // Ghi lại lịch sử vào bảng bids (DB)
-                DataManager.saveBid(currentProduct.getId(), bidAmount);
-                System.out.println("[CLIENT] Đã gửi giá đấu mới lên Server!");
-
-            } catch (Exception e) {
-                showError("Lỗi mạng", "Không thể đồng bộ giá lên máy chủ!");
-                return;
+            // Nếu thời gian còn lại <= 60 giây và chưa kết thúc
+            if (timeLeft.getSeconds() <= 60 && timeLeft.getSeconds() > 0) {
+                // Gia hạn thêm 5 phút
+                currentProduct.setEndTime(currentProduct.getEndTime().plusMinutes(5));
+                System.out.println(">> [ANTI-SNIPING] Đã gia hạn 5 phút cho: " + currentProduct.getName());
             }
 
-            // Báo thành công (ĐOẠN NÀY PHẢI NẰM TRONG TRY LỚN)
+            // 3. ĐẨY DỮ LIỆU XUỐNG DATABASE
+            // Lưu giá mới, số lượt bid mới và thời gian kết thúc mới (nếu có cộng giờ)
+            DataManager.updateProduct(currentProduct);
+
+            // Lưu lịch sử nhát búa này vào bảng bids
+            DataManager.saveBid(currentProduct.getId(), bidAmount);
+
+            // Báo thành công cho người dùng
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Thành công");
             alert.setHeaderText(null);
             alert.setContentText("Bạn đã ra giá thành công!");
             alert.showAndWait();
 
-            // Tự động đóng cửa sổ Pop-up
+            // Đóng cửa sổ Pop-up
             Stage stage = (Stage) bidAmountField.getScene().getWindow();
             stage.close();
 
-            // Bắt các lỗi
         } catch (NumberFormatException e) {
             showError("Lỗi định dạng", "Vui lòng chỉ nhập số (Ví dụ: 25000000)");
         } catch (InvalidBidException | AuctionClosedException e) {
-            // Hứng trọn 2 cái lỗi do chính mình ném ra
             showError("Lỗi hệ thống", e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Lỗi mạng", "Không thể đồng bộ giá lên máy chủ!");
         }
     }
-
 
     private void showError(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);

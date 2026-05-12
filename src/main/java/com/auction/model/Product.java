@@ -17,6 +17,7 @@ public class Product implements Serializable {
     private int sellerId;
     private String sellerName;
     private int bidCount;
+    private String sellerEmail;
 
     // Danh sách lưu lại các mốc giá, dùng để vẽ biểu đồ
     private java.util.List<Double> priceHistory = new java.util.ArrayList<>();
@@ -80,6 +81,9 @@ public class Product implements Serializable {
     public void setBidCount(int bidCount) {
         this.bidCount = bidCount;
     }
+
+    public String getSellerEmail() { return sellerEmail; }
+    public void setSellerEmail(String sellerEmail) { this.sellerEmail = sellerEmail; }
 
     public java.util.List<Double> getPriceHistory() {
         // Nếu đọc đồ từ file cũ lên bị null -> Tự tạo danh sách mới

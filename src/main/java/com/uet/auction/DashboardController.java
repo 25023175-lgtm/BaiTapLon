@@ -363,7 +363,12 @@ public class DashboardController implements Initializable {
             String desc = (product.getDescription() != null && !product.getDescription().isEmpty())
                     ? product.getDescription() : "Không có mô tả chi tiết.";
 
-            String content = "Người bán ID: " + product.getSellerId() + "\n"
+            // [MỚI] Xử lý hiển thị Tên và Email
+            String sellerName = (product.getSellerName() != null) ? product.getSellerName() : "Ẩn danh";
+            String sellerContact = (product.getSellerEmail() != null) ? product.getSellerEmail() : "Không có";
+
+            String content = "Người bán: " + sellerName + "\n"
+                    + "Liên hệ: " + sellerContact + "\n"
                     + "-----------------------------------\n"
                     + "Mô tả: " + desc + "\n"
                     + "-----------------------------------\n"

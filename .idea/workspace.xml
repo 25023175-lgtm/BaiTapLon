@@ -5,17 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3cdd559f-324e-495d-9afd-4b317b85caaa" name="Changes" comment="Hoàn thành UI đăng nhập, Đăng ký và kết nối SceneManager">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/DatabaseConnection.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_products.dat" beforeDir="false" afterPath="$PROJECT_DIR$/server_products.dat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/AuctionServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/AuctionServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/model/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/model/Product.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/BidController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/BidController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/ClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/ClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/DashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/DashboardController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/DataManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/DataManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/uet/auction/DataManagerTest.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -250,7 +243,7 @@
       <workItem from="1777019404768" duration="31000" />
       <workItem from="1777097885925" duration="22521000" />
       <workItem from="1777885938306" duration="19355000" />
-      <workItem from="1778252774340" duration="19232000" />
+      <workItem from="1778252774340" duration="21244000" />
     </task>
     <task id="LOCAL-00001" summary="Hoàn thành UI đăng nhập, Đăng ký và kết nối SceneManager">
       <option name="closed" value="true" />
