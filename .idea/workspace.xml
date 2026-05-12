@@ -5,10 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3cdd559f-324e-495d-9afd-4b317b85caaa" name="Changes" comment="Hoàn thành UI đăng nhập, Đăng ký và kết nối SceneManager">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/model/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/model/Product.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/BidController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/BidController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/DataManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/DataManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/products.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server_products.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/users.dat" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,7 +118,7 @@
       <recent name="com.auction.model" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.MainApplication">
+  <component name="RunManager" selected="JUnit.BidControllerTest">
     <configuration name="AuctionServer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.uet.auction.AuctionServer" />
       <module name="auction" />
@@ -151,7 +150,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DataManagerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="BidControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="auction" />
       <extension name="coverage">
         <pattern>
@@ -160,7 +159,22 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="com.uet.auction" />
-      <option name="MAIN_CLASS_NAME" value="com.uet.auction.DataManagerTest" />
+      <option name="MAIN_CLASS_NAME" value="com.uet.auction.BidControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BidTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="auction" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.auction.model.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.auction.model" />
+      <option name="MAIN_CLASS_NAME" value="com.auction.model.BidTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -181,19 +195,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="com.uet.auction.*|com.auction.*" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="auction" />
-      <option name="PACKAGE_NAME" value="" />
-      <option name="MAIN_CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="pattern" />
-      <patterns>
-        <pattern testClass="com.uet.auction.*|com.auction.*" />
-      </patterns>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <module name="AuctionSystem_UET" />
       <method v="2">
@@ -208,17 +209,17 @@
     <list>
       <item itemvalue="Application.AuctionServer" />
       <item itemvalue="Application.MainApplication" />
-      <item itemvalue="JUnit.DataManagerTest" />
-      <item itemvalue="JUnit.com.uet.auction.*|com.auction.*" />
+      <item itemvalue="JUnit.BidControllerTest" />
+      <item itemvalue="JUnit.BidTest" />
       <item itemvalue="JUnit.MainApplicationTest" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.BidControllerTest" />
+        <item itemvalue="JUnit.MainApplicationTest" />
+        <item itemvalue="JUnit.BidTest" />
         <item itemvalue="Application.MainApplication" />
         <item itemvalue="Application.AuctionServer" />
-        <item itemvalue="JUnit.com.uet.auction.*|com.auction.*" />
-        <item itemvalue="JUnit.MainApplicationTest" />
-        <item itemvalue="JUnit.DataManagerTest" />
       </list>
     </recent_temporary>
   </component>
@@ -243,7 +244,7 @@
       <workItem from="1777019404768" duration="31000" />
       <workItem from="1777097885925" duration="22521000" />
       <workItem from="1777885938306" duration="19355000" />
-      <workItem from="1778252774340" duration="21244000" />
+      <workItem from="1778252774340" duration="21995000" />
     </task>
     <task id="LOCAL-00001" summary="Hoàn thành UI đăng nhập, Đăng ký và kết nối SceneManager">
       <option name="closed" value="true" />
