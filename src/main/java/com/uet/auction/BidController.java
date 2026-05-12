@@ -63,7 +63,13 @@ public class BidController {
                 }
 
                 // 3. Gửi danh sách đã chốt giá lên Server để Broadcast
-                DataManager.saveProducts(allProducts);
+                // Cập nhật giá mới cho biến currentProduct hiện tại
+                currentProduct.setCurrentPrice(bidAmount);
+
+
+                DataManager.updateProduct(currentProduct);
+                // Ghi lại lịch sử vào bảng bids (DB)
+                DataManager.saveBid(currentProduct.getId(), bidAmount);
                 System.out.println("[CLIENT] Đã gửi giá đấu mới lên Server!");
 
             } catch (Exception e) {

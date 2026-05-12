@@ -1,15 +1,14 @@
 package com.uet.auction;
 
-import com.auction.model.Product;
-
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.List;
 
 // implements Runnable giúp class này có khả năng chạy song song (Đa luồng)
 public class ClientHandler implements Runnable {
     private Socket socket;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
 
     public ClientHandler(Socket socket) {
         this.socket = socket;
@@ -18,46 +17,48 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         try {
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+            // 1. Mở ống dẫn
+            out = new ObjectOutputStream(socket.getOutputStream());
             out.flush();
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            in = new ObjectInputStream(socket.getInputStream());
 
-            // 1. Nghe xem Client báo mật mã gì?
+            // 2. Lắng nghe yêu cầu từ Client
             String command = (String) in.readObject();
 
-            if (command.equals("GET")) {
-                // Nếu xin dữ liệu -> Lấy ở kho ném trả về
-                out.writeObject(AuctionServer.sharedProductList);
-                out.flush();
-                System.out.println("[Server] Đã gửi danh sách cho Client.");
-
-            } else if (command.equals("SAVE")) {
-                // Nếu gửi hàng lưu -> Nhận lấy và cất vào kho
-                List<com.auction.model.Product> updatedList = (List<com.auction.model.Product>) in.readObject();
-                AuctionServer.updateAndSaveData(updatedList);
-                System.out.println("[Server] Đã cập nhật kho hàng thành công. Có " + updatedList.size() + " món.");
-
-            } else if (command.equals("LISTEN")) {
-                // 1. Ghi tên vào Danh bạ Nhóm chat
+            if ("LISTEN".equals(command)) {
+                // Client này muốn cắm máy ở đây để nhận thông báo Real-time
                 AuctionServer.onlineClients.add(out);
-                System.out.println("[Server] Một Client vừa tham gia nhóm nhận thông báo Realtime.");
+                System.out.println("[Server] Một Client vừa tham gia mạng lưới Real-time.");
 
-                // 2. Gửi luôn dữ liệu mới nhất
-                out.writeObject("UPDATE");
-                out.writeObject(AuctionServer.sharedProductList);
-                out.flush();
-
-                // 3. Treo máy đứng chờ ở đây (Vòng lặp vô tận)
+                // Treo máy đứng chờ. Nếu Client này gửi mật mã báo hiệu nó vừa thao tác DB xong...
                 while (true) {
-                    in.readObject();
+                    String msg = (String) in.readObject();
+                    if ("CLIENT_UPDATE".equals(msg)) {
+                        System.out.println("[Server] Nhận được báo cáo thay đổi từ Client!");
+                        // ...thì lập tức gọi Server phát loa cho tất cả các máy khác!
+                        AuctionServer.broadcastUpdate();
+                    }
                 }
             }
+            else if ("CLIENT_UPDATE".equals(command)) {
+                // Nếu Client chỉ kết nối chớp nhoáng 1 giây để báo cập nhật rồi tắt
+                AuctionServer.broadcastUpdate();
+                socket.close();
+            }
 
-            // Xong việc thì cúp máy (Chỉ áp dụng cho GET và SAVE, nhánh LISTEN đã bị treo ở trên)
-            socket.close();
-
-        } catch (Exception e) { 
-            System.out.println("[LỖI SERVER] Giao tiếp với Client bị gián đoạn.");
+        } catch (Exception e) {
+            // Lỗi này xảy ra khi Client tự động tắt App (đứt kết nối)
+            System.out.println(">>> [KẾT THÚC] Một Client đã rời mạng lưới.");
+        } finally {
+            // Dọn dẹp: Xóa ống dẫn của Client này khỏi danh bạ để Server khỏi gửi nhầm
+            if (out != null) {
+                AuctionServer.onlineClients.remove(out);
+            }
+            try {
+                if (socket != null && !socket.isClosed()) socket.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 }

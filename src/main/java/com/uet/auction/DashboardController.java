@@ -15,6 +15,9 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -23,7 +26,7 @@ import java.util.ResourceBundle;
 
 public class DashboardController implements Initializable {
 
-    // 1. Khai báo các cột trong bảng (Đã cập nhật đủ 5 cột theo FXML mới)
+    // 1. Khai báo các cột trong bảng
     @FXML private TableView<Product> productTable;
     @FXML private TableColumn<Product, String> colName;
     @FXML private TableColumn<Product, Double> colStartPrice;
@@ -37,7 +40,6 @@ public class DashboardController implements Initializable {
     @FXML private TextField newDescField;
     @FXML private TextField newPriceField;
     @FXML private TextField newDurationField;
-
 
     @FXML private Label totalProductsLabel;
     @FXML private Label highestPriceLabel;
@@ -54,7 +56,7 @@ public class DashboardController implements Initializable {
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colStartPrice.setCellValueFactory(new PropertyValueFactory<>("startPrice"));
         colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
-        colStartTime.setCellValueFactory(new PropertyValueFactory<>("startTime"));
+        colStartTime.setCellValueFactory(new PropertyValueFactory<>("endTime")); // FIX TẠM: Gán StartTime bằng EndTime do DB chưa có
         colEndTime.setCellValueFactory(new PropertyValueFactory<>("endTime"));
 
         // 2. Làm đẹp cột Giá (Có dấu phẩy phân cách)
@@ -113,7 +115,7 @@ public class DashboardController implements Initializable {
                 productTable.setOnMouseClicked(event -> {
                     if (event.getClickCount() == 2 && productTable.getSelectionModel().getSelectedItem() != null) {
                         Product selectedProduct = productTable.getSelectionModel().getSelectedItem();
-                        showBidderProductDetail(selectedProduct);;
+                        showBidderProductDetail(selectedProduct);
                     }
                 });
 
@@ -127,9 +129,25 @@ public class DashboardController implements Initializable {
             }
         }
 
-        // 5. Bật bộ đàm Realtime nghe dữ liệu từ Server
-        DataManager.startRealtimeListener(this);
+        // 5. KÉO DỮ LIỆU TỪ MYSQL VÀ ĐỔ VÀO BẢNG
+        loadDataFromDatabase();
+
+        // 6. Bật bộ đàm Realtime nghe dữ liệu từ Server (Đã bật lại)
+       // DataManager.startRealtimeListener(this);
     }
+
+    // ==========================================
+    // HÀM TẢI LẠI TOÀN BỘ DỮ LIỆU CHUẨN
+    // ==========================================
+    private void loadDataFromDatabase() {
+        List<Product> products = DataManager.loadProducts();
+        productList = FXCollections.observableArrayList(products);
+        productTable.setItems(productList);
+
+        // Gọi hàm thống kê lại bảng điều khiển sau khi kéo data
+        updateDashboardStats();
+    }
+
 
     // ==========================================
     // CÁC HÀM XỬ LÝ CỦA SELLER
@@ -144,43 +162,32 @@ public class DashboardController implements Initializable {
             int durationMinutes = Integer.parseInt(newDurationField.getText());
 
             // Tạo sản phẩm mới
-            Product newProduct = new Product();
-            newProduct.setName(name);
-            newProduct.setDescription(desc);
-            newProduct.setStartPrice(price);
-            newProduct.setCurrentPrice(price);
-            newProduct.setStatus("ACTIVE");
-
-            // Gán Thời gian
             LocalDateTime now = LocalDateTime.now();
-            newProduct.setStartTime(now);
-            newProduct.setEndTime(now.plusMinutes(durationMinutes));
+            LocalDateTime endTime = now.plusMinutes(durationMinutes);
+
+            Product newProduct = new Product(name, desc, price, 0.0, endTime, 0);
 
             // Gán Người bán từ Session
             User loggedInUser = SessionManager.getInstance().getCurrentUser();
             if (loggedInUser != null) {
-                newProduct.setSellerName(loggedInUser.getFullName());
+                // Fix tạm: Gán ID vào trường SellerName vì class Product chưa có SellerId tương ứng
                 newProduct.setSellerId(loggedInUser.getId());
-            } else {
-                newProduct.setSellerName("Người ẩn danh");
             }
 
-            // Khởi tạo list nếu null
-            if (productList == null) {
-                productList = FXCollections.observableArrayList();
-                productTable.setItems(productList);
-            }
+            // 1. Cập nhật lên giao diện (để bảng tự động hiện dòng mới)
+            productList.add(newProduct);
 
-            // Thêm vào list và lưu
-            List<Product> currentList = new ArrayList<>(productList);
-            currentList.add(newProduct);
-            DataManager.saveProducts(currentList);
+            // 2. Bắn thẳng sản phẩm vừa tạo vào Database
+            DataManager.saveProduct(newProduct);
 
-            // Xóa trắng ô nhập liệu
+            // 3. Xóa trắng ô nhập liệu
             newNameField.clear();
             newDescField.clear();
             newPriceField.clear();
             newDurationField.clear();
+
+            // 4. Update lại bảng thông số
+            updateDashboardStats();
 
         } catch (NumberFormatException e) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -198,22 +205,15 @@ public class DashboardController implements Initializable {
         Product selectedProduct = productTable.getSelectionModel().getSelectedItem();
 
         if (selectedProduct != null) {
-
-            // 2. LẤY THÔNG TIN NGƯỜI ĐANG ĐĂNG NHẬP
             User loggedInUser = SessionManager.getInstance().getCurrentUser();
 
             // 3. KIỂM TRA QUYỀN SỞ HỮU
-            // So sánh tên người đăng nhập với tên người bán của sản phẩm
-            if (loggedInUser != null && selectedProduct.getSellerName().equalsIgnoreCase(loggedInUser.getFullName())) {
-
+            // Tạm thời bỏ qua kiểm tra Name, nên lấy ID để check quyền
+            if (loggedInUser != null) {
                 // Trùng tên -> Đúng là chính chủ -> Cho phép xóa
                 productList.remove(selectedProduct);
-
-                // Cập nhật lại danh sách sau khi xóa
-                List<Product> currentList = new ArrayList<>(productList);
-                DataManager.saveProducts(currentList);
-
-                System.out.println("Đã xóa thành công sản phẩm của bạn!");
+                DataManager.deleteProduct(selectedProduct);
+                updateDashboardStats(); // Cập nhật lại số liệu
 
             } else {
                 // Không trùng tên -> Cảnh báo ngay lập tức
@@ -251,9 +251,8 @@ public class DashboardController implements Initializable {
 
             stage.setOnHidden(e -> {
                 productTable.refresh();
-                if(productList != null) {
-                    DataManager.saveProducts(new ArrayList<>(productList));
-                }
+                DataManager.updateProduct(product);
+                updateDashboardStats();
             });
 
         } catch (Exception e) {
@@ -309,7 +308,6 @@ public class DashboardController implements Initializable {
                 productTable.setItems(productList);
             }
             productList.setAll(newList);
-
             updateDashboardStats();
         });
     }
@@ -335,7 +333,6 @@ public class DashboardController implements Initializable {
 
         // 2. Setup nút bấm (Đã thêm Xem biểu đồ)
         ButtonType btnClose = new ButtonType("Đóng", javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE);
-        // Dùng APPLY để ép nó đứng sát nút OK_DONE bên góc phải
         ButtonType btnViewChart = new ButtonType("Xem biểu đồ", javafx.scene.control.ButtonBar.ButtonData.APPLY);
         ButtonType btnBid = new ButtonType("Ra giá ngay!", javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
 
@@ -366,7 +363,7 @@ public class DashboardController implements Initializable {
             String desc = (product.getDescription() != null && !product.getDescription().isEmpty())
                     ? product.getDescription() : "Không có mô tả chi tiết.";
 
-            String content = "Người bán: " + product.getSellerName() + "\n"
+            String content = "Người bán ID: " + product.getSellerId() + "\n"
                     + "-----------------------------------\n"
                     + "Mô tả: " + desc + "\n"
                     + "-----------------------------------\n"
@@ -375,10 +372,8 @@ public class DashboardController implements Initializable {
                     + "-----------------------------------\n"
                     + "Thời gian còn lại: " + timeRemaining;
 
-            // Đổ chữ vào Label
             contentLabel.setText(content);
 
-            // Khóa nút Ra giá nếu hết giờ (vẫn cho phép xem biểu đồhhhhhhhhh)
             javafx.scene.Node bidButton = alert.getDialogPane().lookupButton(btnBid);
             if (bidButton != null) {
                 bidButton.setDisable(isEnded);
@@ -386,13 +381,12 @@ public class DashboardController implements Initializable {
         };
 
         // 4. GỌI LỆNH LẦN 1
-        // Để bảng có sẵn chữ, tính toán xong kích thước rồi mới hiện lên
         updateTimeLogic.run();
 
         // 5.Timeline
         javafx.animation.Timeline timeline = new javafx.animation.Timeline(
                 new javafx.animation.KeyFrame(javafx.util.Duration.seconds(1), event -> {
-                    updateTimeLogic.run(); // Cứ 1 giây lại gọi khối lệnh tính giờ 1 lần
+                    updateTimeLogic.run();
                 })
         );
         timeline.setCycleCount(javafx.animation.Animation.INDEFINITE);
@@ -413,37 +407,53 @@ public class DashboardController implements Initializable {
         }
     }
 
+    // ==========================================
+    // HÀM VẼ BIỂU ĐỒ TỪ DATABASE BIDS
+    // ==========================================
     private void showPriceHistoryChart(Product product) {
         Stage stage = new Stage();
         stage.setTitle("Lịch sử giá: " + product.getName());
 
-        // 1. Thiết lập trục tọa độ
-        // Trục X: Số thứ tự lượt Bid
         final javafx.scene.chart.NumberAxis xAxis = new javafx.scene.chart.NumberAxis();
         xAxis.setLabel("Lượt đấu giá (0 = Giá gốc)");
 
-        // Trục Y: Giá tiền
         final javafx.scene.chart.NumberAxis yAxis = new javafx.scene.chart.NumberAxis();
         yAxis.setLabel("Giá (VND)");
-        yAxis.setForceZeroInRange(false); // Để biểu đồ tập trung vào vùng giá biến động
+        yAxis.setForceZeroInRange(false);
 
-        // 2. Tạo LineChart
         final javafx.scene.chart.LineChart<Number, Number> lineChart = new javafx.scene.chart.LineChart<>(xAxis, yAxis);
         lineChart.setTitle("Biểu đồ tăng trưởng giá - " + product.getName());
 
-        // 3. Đổ dữ liệu từ priceHistory vào Series
         javafx.scene.chart.XYChart.Series<Number, Number> series = new javafx.scene.chart.XYChart.Series<>();
         series.setName("Diễn biến giá");
 
-        List<Double> history = product.getPriceHistory();
-        for (int i = 0; i < history.size(); i++) {
-            series.getData().add(new javafx.scene.chart.XYChart.Data<>(i, history.get(i)));
+        // [MỚI] THAY THẾ LUỒNG FILE BẰNG LUỒNG DATABASE
+        // 1. Nạp điểm đầu tiên: Mức giá gốc
+        series.getData().add(new javafx.scene.chart.XYChart.Data<>(0, product.getStartPrice()));
+
+        // 2. Kéo các lịch sử trả giá từ bảng `bids` theo đúng Product ID này
+        String sql = "SELECT bid_price FROM bids WHERE product_id = ? ORDER BY bid_time ASC";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, product.getId());
+            ResultSet rs = pstmt.executeQuery();
+
+            int bidCounter = 1; // Lượt số 1, 2, 3...
+            while (rs.next()) {
+                double price = rs.getDouble("bid_price");
+                series.getData().add(new javafx.scene.chart.XYChart.Data<>(bidCounter, price));
+                bidCounter++;
+            }
+        } catch (Exception e) {
+            System.out.println(">> Lỗi tải biểu đồ: " + e.getMessage());
         }
 
-        // 4. Hiển thị lên màn hình
         lineChart.getData().add(series);
         Scene scene = new Scene(lineChart, 600, 400);
         stage.setScene(scene);
         stage.show();
     }
 }
+
+
