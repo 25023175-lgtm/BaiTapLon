@@ -10,40 +10,93 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="600.0" prefWidth="700.0" stylesheets="@styles.css" styleClass="root-background" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uet.auction.RegisterController">
+<VBox alignment="CENTER" prefHeight="640.0" prefWidth="720.0"
+      stylesheets="@styles.css" styleClass="root-background"
+      xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.uet.auction.RegisterController">
    <children>
 
-      <VBox alignment="CENTER" maxWidth="400.0" spacing="15.0" styleClass="login-card">
+      <VBox alignment="CENTER" maxWidth="380.0" spacing="14.0" styleClass="login-card">
          <children>
-            <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1877F2;" text="ĐĂNG KÝ TÀI KHOẢN" />
 
-            <TextField fx:id="regUsernameField" prefHeight="40.0" promptText="Tên đăng nhập" style="-fx-font-size: 14px;" />
+            <!-- ── Logo / Title ── -->
+            <Label style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #52796F;"
+                   text="🏷️  AUCTIONUET" />
 
-            <StackPane alignment="CENTER_RIGHT">
+            <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1A2E22;
+                          -fx-padding: 0 0 4 0;"
+                   text="Tạo tài khoản mới" />
+
+            <!-- ── Username ── -->
+            <TextField fx:id="regUsernameField"
+                       prefHeight="44.0" prefWidth="330.0"
+                       promptText="Tên đăng nhập" />
+
+            <!-- ── Password (with toggle) ── -->
+            <StackPane alignment="CENTER_RIGHT" prefWidth="330.0">
                <children>
-                  <PasswordField fx:id="regPasswordField" prefHeight="40.0" promptText="Mật khẩu" style="-fx-font-size: 14px; -fx-padding: 0 40 0 10;" />
-                  <TextField fx:id="regVisiblePasswordField" prefHeight="40.0" promptText="Mật khẩu" style="-fx-font-size: 14px; -fx-padding: 0 40 0 10;" visible="false" />
-                  <ToggleButton fx:id="toggleRegPasswordBtn" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 16px;" text="👁" />
+                  <PasswordField fx:id="regPasswordField"
+                                 prefHeight="44.0" prefWidth="330.0"
+                                 promptText="Mật khẩu"
+                                 style="-fx-padding: 0 44 0 15;" />
+                  <TextField fx:id="regVisiblePasswordField"
+                             prefHeight="44.0" prefWidth="330.0"
+                             promptText="Mật khẩu"
+                             style="-fx-padding: 0 44 0 15;"
+                             visible="false" />
+                  <ToggleButton fx:id="toggleRegPasswordBtn"
+                                style="-fx-background-color: transparent; -fx-cursor: hand;
+                                       -fx-font-size: 16px; -fx-padding: 0 10 0 0;"
+                                text="👁" />
                </children>
             </StackPane>
 
-            <StackPane alignment="CENTER_RIGHT">
+            <!-- ── Confirm Password (with toggle) ── -->
+            <StackPane alignment="CENTER_RIGHT" prefWidth="330.0">
                <children>
-                  <PasswordField fx:id="confirmPasswordField" prefHeight="40.0" promptText="Xác nhận mật khẩu" style="-fx-font-size: 14px; -fx-padding: 0 40 0 10;" />
-                  <TextField fx:id="confirmVisibleField" prefHeight="40.0" promptText="Xác nhận mật khẩu" style="-fx-font-size: 14px; -fx-padding: 0 40 0 10;" visible="false" />
-                  <ToggleButton fx:id="toggleConfirmBtn" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 16px;" text="👁" />
+                  <PasswordField fx:id="confirmPasswordField"
+                                 prefHeight="44.0" prefWidth="330.0"
+                                 promptText="Xác nhận mật khẩu"
+                                 style="-fx-padding: 0 44 0 15;" />
+                  <TextField fx:id="confirmVisibleField"
+                             prefHeight="44.0" prefWidth="330.0"
+                             promptText="Xác nhận mật khẩu"
+                             style="-fx-padding: 0 44 0 15;"
+                             visible="false" />
+                  <ToggleButton fx:id="toggleConfirmBtn"
+                                style="-fx-background-color: transparent; -fx-cursor: hand;
+                                       -fx-font-size: 16px; -fx-padding: 0 10 0 0;"
+                                text="👁" />
                </children>
             </StackPane>
 
-            <TextField fx:id="emailField" prefHeight="40.0" promptText="Email hoặc Số điện thoại" style="-fx-font-size: 14px;" />
+            <!-- ── Email / Phone ── -->
+            <TextField fx:id="emailField"
+                       prefHeight="44.0" prefWidth="330.0"
+                       promptText="Email hoặc Số điện thoại" />
 
-            <TextField fx:id="fullNameField" prefHeight="40.0" promptText="Họ và tên" style="-fx-font-size: 14px;" />
+            <!-- ── Full Name ── -->
+            <TextField fx:id="fullNameField"
+                       prefHeight="44.0" prefWidth="330.0"
+                       promptText="Họ và tên" />
 
-            <ComboBox fx:id="roleComboBox" prefHeight="40.0" prefWidth="400.0" style="-fx-font-size: 14px;" />
+            <!-- ── Role ComboBox ── -->
+            <ComboBox fx:id="roleComboBox"
+                      prefHeight="44.0" prefWidth="330.0" />
 
-            <Button fx:id="handleRegister" mnemonicParsing="false" onAction="#handleRegister" prefHeight="45.0" prefWidth="400.0" style="-fx-background-color: #1877F2; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 8px; -fx-cursor: hand;" text="Đăng ký" />
+            <!-- ── Register button ── -->
+            <Button fx:id="handleRegister" mnemonicParsing="false" onAction="#handleRegister"
+                    prefHeight="46.0" prefWidth="330.0"
+                    style="-fx-background-color: #2D6A4F; -fx-text-fill: white;
+                           -fx-font-size: 15px; -fx-font-weight: bold;
+                           -fx-background-radius: 10; -fx-cursor: hand;"
+                    text="Đăng ký" />
 
-            <Hyperlink fx:id="handleBackToLogin" onAction="#handleBackToLogin" style="-fx-font-size: 14px; -fx-text-fill: #1877F2;" text="Đã có tài khoản? Đăng nhập ngay" />
+            <!-- ── Back to login link ── -->
+            <Hyperlink fx:id="handleBackToLogin" onAction="#handleBackToLogin"
+                       style="-fx-font-size: 13px; -fx-text-fill: #2D6A4F;"
+                       text="Đã có tài khoản? Đăng nhập ngay" />
+
          </children>
       </VBox>
 

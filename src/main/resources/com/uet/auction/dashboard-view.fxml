@@ -3,71 +3,206 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="600.0" prefWidth="850.0" stylesheets="@styles.css" styleClass="dashboard-root" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uet.auction.DashboardController">
+<BorderPane prefHeight="660.0" prefWidth="1060.0"
+            stylesheets="@styles.css" styleClass="dashboard-root"
+            xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.uet.auction.DashboardController">
 
-    <top>
-        <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="header-bar" BorderPane.alignment="CENTER">
-            <children>
-                <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1877F2;" text="Hệ thống Đấu giá UET" />
-                <Region HBox.hgrow="ALWAYS" />
-                <Button mnemonicParsing="false" onAction="#handleLogout" prefHeight="38.0" prefWidth="110.0" styleClass="btn-logout" text="Đăng xuất" />
-            </children>
-        </HBox>
-    </top>
+    <!-- ════════════════════════════════════════
+         LEFT — SIDEBAR
+         ════════════════════════════════════════ -->
+    <left>
+        <VBox styleClass="sidebar" prefWidth="220.0" spacing="2.0">
 
-    <center>
-        <VBox spacing="15.0" style="-fx-padding: 20;">
-
-            <HBox alignment="CENTER" spacing="20.0">
-                <children>
-                    <VBox alignment="CENTER" prefHeight="100.0" prefWidth="250.0" style="-fx-background-color: #f0ad4e; -fx-background-radius: 8; -fx-padding: 10;">
-                        <Label fx:id="totalProductsLabel" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: white;" text="0" />
-                        <Label style="-fx-font-size: 16px; -fx-text-fill: white;" text="Tổng số sản phẩm đang bán" />
-                    </VBox>
-
-                    <VBox alignment="CENTER" prefHeight="100.0" prefWidth="250.0" style="-fx-background-color: #5cb85c; -fx-background-radius: 8; -fx-padding: 10;">
-                        <Label fx:id="highestPriceLabel" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;" text="0 VND" />
-                        <Label fx:id="highestPriceNameLabel" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: white;" text="..." />
-                        <Label style="-fx-font-size: 14px; -fx-text-fill: white; -fx-padding: 5 0 0 0;" text="Đang có giá cao nhất" />
-                    </VBox>
-
-                    <VBox alignment="CENTER" prefHeight="100.0" prefWidth="250.0" style="-fx-background-color: #5bc0de; -fx-background-radius: 8; -fx-padding: 10;">
-                        <Label fx:id="mostBidsLabel" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;" text="0 lượt" />
-                        <Label fx:id="mostBidsNameLabel" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: white;" text="..." />
-                        <Label style="-fx-font-size: 14px; -fx-text-fill: white; -fx-padding: 5 0 0 0;" text="Được đấu giá nhiều nhất" />
-                    </VBox>
-                </children>
+            <!-- Logo -->
+            <HBox styleClass="sidebar-logo-area" alignment="CENTER_LEFT" spacing="10.0">
+                <Label styleClass="sidebar-logo-icon" text="🏷️" />
+                <Label styleClass="sidebar-logo-text" text="AuctionUET" />
             </HBox>
 
-            <TableView fx:id="productTable" VBox.vgrow="ALWAYS" style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-font-size: 14px;">
-                <columns>
-                    <TableColumn fx:id="colName" prefWidth="160.0" text="Tên sản phẩm" />
-                    <TableColumn fx:id="colStartPrice" prefWidth="140.0" text="Giá khởi điểm" />
-                    <TableColumn fx:id="colDescription" prefWidth="200.0" text="Mô tả" />
-                    <TableColumn fx:id="colStartTime" prefWidth="150.0" text="Thời gian đăng" />
-                    <TableColumn fx:id="colEndTime" prefWidth="150.0" text="Kết thúc" />
-                </columns>
-                <columnResizePolicy>
-                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                </columnResizePolicy>
-            </TableView>
+            <!-- ── MENU section ── -->
+            <Label styleClass="sidebar-section-label" text="MENU" />
+
+            <HBox fx:id="navDashboard" styleClass="sidebar-item-active"
+                  alignment="CENTER_LEFT" spacing="12.0"
+                  onMouseClicked="#handleNavDashboard">
+                <Label styleClass="sidebar-item-icon" text="📊" />
+                <Label styleClass="sidebar-item-text" text="Dashboard" />
+            </HBox>
+
+            <HBox fx:id="navProducts" styleClass="sidebar-item"
+                  alignment="CENTER_LEFT" spacing="12.0"
+                  onMouseClicked="#handleNavProducts">
+                <Label styleClass="sidebar-item-icon" text="📦" />
+                <Label styleClass="sidebar-item-text" text="Sản phẩm" />
+            </HBox>
+
+            <HBox fx:id="navCalendar" styleClass="sidebar-item"
+                  alignment="CENTER_LEFT" spacing="12.0"
+                  onMouseClicked="#handleNavCalendar">
+                <Label styleClass="sidebar-item-icon" text="📅" />
+                <Label styleClass="sidebar-item-text" text="Lịch đấu giá" />
+            </HBox>
+
+            <HBox fx:id="navNotifications" styleClass="sidebar-item"
+                  alignment="CENTER_LEFT" spacing="12.0"
+                  onMouseClicked="#handleNavNotifications">
+                <Label styleClass="sidebar-item-icon" text="🔔" />
+                <Label styleClass="sidebar-item-text" text="Thông báo" />
+            </HBox>
+
+            <!-- Spacer -->
+            <Region VBox.vgrow="ALWAYS" />
+
+            <!-- ── GENERAL section ── -->
+            <Label styleClass="sidebar-section-label" text="GENERAL" />
+
+            <HBox fx:id="navSettings" styleClass="sidebar-item"
+                  alignment="CENTER_LEFT" spacing="12.0"
+                  onMouseClicked="#handleNavSettings">
+                <Label styleClass="sidebar-item-icon" text="⚙️" />
+                <Label styleClass="sidebar-item-text" text="Cài đặt" />
+            </HBox>
+
+            <HBox fx:id="navHelp" styleClass="sidebar-item"
+                  alignment="CENTER_LEFT" spacing="12.0"
+                  onMouseClicked="#handleNavHelp">
+                <Label styleClass="sidebar-item-icon" text="❓" />
+                <Label styleClass="sidebar-item-text" text="Hỗ trợ" />
+            </HBox>
+
+        </VBox>
+    </left>
+
+    <!-- ════════════════════════════════════════
+         CENTER — MAIN CONTENT
+         ════════════════════════════════════════ -->
+    <center>
+        <VBox>
+
+            <!-- ── Header bar ── -->
+            <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="header-bar">
+                <Label styleClass="header-title" text="Hệ thống Đấu giá UET" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button mnemonicParsing="false" onAction="#handleLogout"
+                        prefHeight="38.0" prefWidth="110.0"
+                        styleClass="btn-logout" text="Đăng xuất" />
+            </HBox>
+
+            <!-- ── Scrollable content ── -->
+            <VBox styleClass="content-area" VBox.vgrow="ALWAYS" spacing="18.0">
+
+                <!-- Page title -->
+                <VBox spacing="3.0">
+                    <Label styleClass="page-title" text="Dashboard" />
+                    <Label styleClass="page-subtitle"
+                           text="Quản lý và theo dõi các phiên đấu giá của bạn." />
+                </VBox>
+
+                <!-- ── STAT CARDS ── -->
+                <HBox alignment="CENTER_LEFT" spacing="16.0">
+
+                    <!-- Card 1 — Total products (dark green) -->
+                    <VBox alignment="CENTER" prefHeight="120.0" spacing="6.0"
+                          HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: #1A2E22;
+                                 -fx-background-radius: 14;
+                                 -fx-padding: 20 16;
+                                 -fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.18),10,0,0,3);">
+                        <!-- Icon badge -->
+                        <Label style="-fx-font-size: 22px;" text="📦" />
+                        <Label fx:id="totalProductsLabel"
+                               style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: white;"
+                               text="0" />
+                        <Label style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.7);
+                                      -fx-wrap-text: true; -fx-text-alignment: center;"
+                               text="Tổng số sản phẩm đang bán" />
+                    </VBox>
+
+                    <!-- Card 2 — Highest price (medium green) -->
+                    <VBox alignment="CENTER" prefHeight="120.0" spacing="5.0"
+                          HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: #2D6A4F;
+                                 -fx-background-radius: 14;
+                                 -fx-padding: 20 16;
+                                 -fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.18),10,0,0,3);">
+                        <Label style="-fx-font-size: 22px;" text="💰" />
+                        <Label fx:id="highestPriceLabel"
+                               style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;
+                                      -fx-wrap-text: true; -fx-text-alignment: center;"
+                               text="0 VND" />
+                        <Label fx:id="highestPriceNameLabel"
+                               style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #A7F3D0;"
+                               text="..." />
+                        <Label style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.7);"
+                               text="Đang có giá cao nhất" />
+                    </VBox>
+
+                    <!-- Card 3 — Most bids (teal) -->
+                    <VBox alignment="CENTER" prefHeight="120.0" spacing="5.0"
+                          HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: #0E7490;
+                                 -fx-background-radius: 14;
+                                 -fx-padding: 20 16;
+                                 -fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.18),10,0,0,3);">
+                        <Label style="-fx-font-size: 22px;" text="🔥" />
+                        <Label fx:id="mostBidsLabel"
+                               style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;"
+                               text="0 lượt" />
+                        <Label fx:id="mostBidsNameLabel"
+                               style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #A5F3FC;"
+                               text="..." />
+                        <Label style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.7);"
+                               text="Được đấu giá nhiều nhất" />
+                    </VBox>
+
+                </HBox>
+
+                <!-- ── PRODUCT TABLE ── -->
+                <TableView fx:id="productTable" VBox.vgrow="ALWAYS"
+                           styleClass="data-table">
+                    <columns>
+                        <TableColumn fx:id="colName"       prefWidth="160.0" text="Tên sản phẩm" />
+                        <TableColumn fx:id="colStartPrice" prefWidth="140.0" text="Giá khởi điểm" />
+                        <TableColumn fx:id="colDescription" prefWidth="200.0" text="Mô tả" />
+                        <TableColumn fx:id="colStartTime"  prefWidth="150.0" text="Thời gian đăng" />
+                        <TableColumn fx:id="colEndTime"    prefWidth="150.0" text="Kết thúc" />
+                    </columns>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
+                </TableView>
+
+                <!-- ── ADD PRODUCT FORM (Seller only) ── -->
+                <HBox fx:id="addProductBox" alignment="CENTER_LEFT"
+                      spacing="10.0" styleClass="add-product-card">
+
+                    <TextField fx:id="newNameField"
+                               prefHeight="42.0" prefWidth="150.0"
+                               promptText="Tên SP..." styleClass="form-input" />
+                    <TextField fx:id="newDescField"
+                               prefHeight="42.0" prefWidth="170.0"
+                               promptText="Mô tả..." styleClass="form-input" />
+                    <TextField fx:id="newPriceField"
+                               prefHeight="42.0" prefWidth="110.0"
+                               promptText="Giá VND" styleClass="form-input" />
+                    <TextField fx:id="newDurationField"
+                               prefHeight="42.0" prefWidth="110.0"
+                               promptText="TG (Phút)" styleClass="form-input" />
+
+                    <Region HBox.hgrow="ALWAYS" />
+
+                    <Button mnemonicParsing="false" onAction="#handleAddProduct"
+                            prefHeight="42.0" prefWidth="130.0"
+                            styleClass="btn-add" text="+ Thêm SP" />
+                    <Button mnemonicParsing="false" onAction="#handleDeleteProduct"
+                            prefHeight="42.0" prefWidth="80.0"
+                            styleClass="btn-delete" text="Xóa" />
+
+                </HBox>
+
+            </VBox>
         </VBox>
     </center>
-
-    <bottom>
-        <VBox style="-fx-padding: 0 20 20 20;" BorderPane.alignment="CENTER">
-            <HBox fx:id="addProductBox" alignment="CENTER" spacing="8.0" styleClass="add-product-card">
-                <children>
-                    <TextField fx:id="newNameField" prefHeight="42.0" prefWidth="150.0" promptText="Tên SP..." style="-fx-font-size: 14px; -fx-background-radius: 6;" />
-                    <TextField fx:id="newDescField" prefHeight="42.0" prefWidth="170.0" promptText="Mô tả..." style="-fx-font-size: 14px; -fx-background-radius: 6;" />
-                    <TextField fx:id="newPriceField" prefHeight="42.0" prefWidth="110.0" promptText="Giá VND" style="-fx-font-size: 14px; -fx-background-radius: 6;" />
-                    <TextField fx:id="newDurationField" prefHeight="42.0" prefWidth="110.0" promptText="TG (Phút)" style="-fx-font-size: 14px; -fx-background-radius: 6;" />
-
-                    <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#handleAddProduct" prefHeight="42.0" prefWidth="130.0" style="-fx-background-color: #42b72a; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;" text="+ Thêm SP" />
-                    <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#handleDeleteProduct" prefHeight="42.0" prefWidth="80.0" style="-fx-background-color: #e41e3f; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;" text="Xóa" />
-                </children>
-            </HBox>
-        </VBox>
-    </bottom>
 
 </BorderPane>

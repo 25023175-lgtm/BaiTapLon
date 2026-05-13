@@ -1,162 +1,561 @@
-/* 1. Style cho phần khung ngoài của ComboBox */
-.combo-box {
-    -fx-background-color: #ffffff;
-    -fx-border-color: #ced4da;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
-    -fx-font-size: 14px;
-    -fx-pref-width: 200px; /* Độ rộng của ô chọn */
+/* ============================================================
+   STYLES.CSS — AuctionUET  |  Green Theme (Dribbble-inspired)
+   ============================================================ */
+
+/* ── GLOBAL ─────────────────────────────────────────────── */
+.root {
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 }
 
-/* 2. Hiệu ứng khi di chuột vào ComboBox */
-.combo-box:hover {
-    -fx-border-color: #007bff; /* Đổi viền sang màu xanh dương */
-    -fx-cursor: hand;
+/* ── LOGIN / REGISTER BACKGROUND ────────────────────────── */
+.root-background {
+    -fx-background-color: linear-gradient(to bottom right, #1B4332, #52B788);
 }
 
-/* 3. Phông nền của cái bảng danh sách xổ xuống */
-.combo-box-popup .list-view {
-    -fx-background-color: #ffffff;
-    -fx-border-color: #ced4da;
-    -fx-border-radius: 3px;
+/* ── AUTH CARD (white floating card) ────────────────────── */
+.login-card {
+    -fx-background-color: white;
+    -fx-background-radius: 18;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.28), 30, 0, 0, 12);
+    -fx-padding: 48 44 44 44;
+    -fx-min-width: 360;
 }
 
-/* 4. Style cho từng dòng chữ (Bidder, Seller) trong danh sách */
-.combo-box-popup .list-cell {
-    -fx-padding: 8px 12px;
-    -fx-font-size: 14px;
-    -fx-background-color: #ffffff;
-    -fx-text-fill: #333333;
-}
-
-/* 5. Hiệu ứng khi lướt chuột qua từng dòng */
-.combo-box-popup .list-cell:selected {
-    -fx-background-color: #f8f9fa; /* Màu xám cực nhạt để biết là đang chọn */
-    -fx-text-fill: #333333;
-}
-
-/* 6. CHỈ KHI trỏ chuột vào (Hover) mới nổi màu xanh dương */
-.combo-box-popup .list-cell:hover {
-    -fx-background-color: #007bff;
-    -fx-text-fill: white;
-}
-
-/* =========================================
-   1. Ô NHẬP LIỆU (TextField & PasswordField)
-   ========================================= */
+/* ── TEXT FIELDS & PASSWORD FIELDS ──────────────────────── */
 .text-field, .password-field {
-    -fx-padding: 10px 15px; /* Làm ô nhập to và thoáng hơn */
+    -fx-padding: 10 15;
     -fx-font-size: 14px;
-    -fx-background-color: #ffffff;
-    -fx-border-color: #ced4da;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
+    -fx-background-color: #F6FAF8;
+    -fx-border-color: #C8D9D2;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-pref-height: 44px;
+    -fx-text-fill: #1A2E22;
+    -fx-prompt-text-fill: #9AB5AA;
 }
 
-/* Hiệu ứng khi click chuột vào ô để gõ (Focus) */
 .text-field:focused, .password-field:focused {
-    -fx-border-color: #007bff; /* Viền xanh đồng bộ với ComboBox */
+    -fx-border-color: #2D6A4F;
     -fx-background-color: #ffffff;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,123,255,0.2), 5, 0, 0, 0); /* Bóng mờ màu xanh siêu mượt */
+    -fx-effect: dropshadow(three-pass-box, rgba(45,106,79,0.22), 8, 0, 0, 0);
 }
 
-
-/* =========================================
-   2. NÚT BẤM (Button)
-   ========================================= */
+/* ── BUTTONS (default — primary green) ──────────────────── */
 .button {
-    -fx-background-color: #007bff; /* Nền xanh dương đậm */
-    -fx-text-fill: white; /* Chữ trắng */
+    -fx-background-color: #2D6A4F;
+    -fx-text-fill: white;
     -fx-font-size: 15px;
     -fx-font-weight: bold;
-    -fx-padding: 10px 20px;
-    -fx-background-radius: 5px;
-    -fx-cursor: hand; /* Biến con trỏ chuột thành hình bàn tay */
+    -fx-padding: 11 22;
+    -fx-background-radius: 9;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(27,67,50,0.25), 8, 0, 0, 3);
 }
 
-/* Khi lướt chuột qua nút */
 .button:hover {
-    -fx-background-color: #0056b3; /* Xanh đậm hơn một chút */
+    -fx-background-color: #1B4332;
 }
 
-/* Khi nhấn giữ chuột vào nút */
 .button:pressed {
-    -fx-background-color: #004085;
+    -fx-background-color: #0F2B1F;
+    -fx-effect: none;
 }
 
-
-/* =========================================
-   3. ĐƯỜNG LINK (Hyperlink)
-   ========================================= */
+/* ── HYPERLINKS ──────────────────────────────────────────── */
 .hyperlink {
-    -fx-text-fill: #007bff;
+    -fx-text-fill: #2D6A4F;
     -fx-font-size: 13px;
-    -fx-underline: false; /* Mặc định không gạch chân */
-    -fx-border-color: transparent; /* Xoá cái viền chấm chấm mặc định cực xấu của JavaFX */
+    -fx-underline: false;
+    -fx-border-color: transparent;
 }
 
-/* Lướt chuột qua link sẽ hiện gạch chân */
 .hyperlink:hover {
     -fx-underline: true;
-    -fx-text-fill: #0056b3;
+    -fx-text-fill: #1B4332;
 }
 
+.hyperlink:visited {
+    -fx-text-fill: #2D6A4F;
+}
 
-/* =========================================
-   4. TIÊU ĐỀ (Label)
-   ========================================= */
+/* ── TITLE LABEL (utility class) ────────────────────────── */
 .title-label {
     -fx-font-size: 24px;
     -fx-font-weight: bold;
-    -fx-text-fill: #333333;
+    -fx-text-fill: #1B4332;
 }
 
-/* 1. Tạo màu nền Gradient (chuyển từ xanh đậm sang xanh nhạt) cho cả màn hình */
-.root-background {
-    -fx-background-color: linear-gradient(to bottom right, #1877F2, #e7f2fe);
+/* ── COMBOBOX ────────────────────────────────────────────── */
+.combo-box {
+    -fx-background-color: #F6FAF8;
+    -fx-border-color: #C8D9D2;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-font-size: 14px;
 }
 
-/* 2. Tạo hiệu ứng "Card" trắng tinh, bo góc, đổ bóng cho cái khung Đăng nhập */
-.login-card {
-    -fx-background-color: white;
-    -fx-background-radius: 15; /* Bo góc mềm mại */
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 20, 0, 0, 10); /* Đổ bóng 3D */
-    -fx-padding: 40; /* Tạo khoảng trống bên trong cho thoáng */
-}
-
-/* Nền của dashboard (màu xám nhạt đặc trưng giúp nổi bật các khối trắng) */
-.dashboard-root {
-    /* Màu nền xám nhạt tinh tế */
-    -fx-background-color: #f4f6f9;
-    /* Lấy họa tiết nhiễu chìm (noise) trực tiếp từ web */
-    -fx-background-image: url('https://www.transparenttextures.com/patterns/diagonal-noise.png');
-    /* Lặp họa tiết kín màn hình */
-    -fx-background-repeat: repeat;
-}
-
-/* Thanh Header phía trên cùng (trắng, đổ bóng nhẹ xuống dưới) */
-.header-bar {
-    -fx-background-color: #ffffff;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 2);
-    -fx-padding: 15 20 15 20;
-}
-
-/* Nút đăng xuất (nền xám nhạt, đổi màu khi di chuột vào) */
-.btn-logout {
-    -fx-background-color: #e4e6eb;
-    -fx-text-fill: #050505;
-    -fx-font-weight: bold;
-    -fx-background-radius: 6;
+.combo-box:hover {
+    -fx-border-color: #2D6A4F;
     -fx-cursor: hand;
 }
-.btn-logout:hover {
-    -fx-background-color: #d8dadf;
+
+.combo-box-popup .list-view {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #C8D9D2;
+    -fx-border-radius: 8;
 }
 
-/* Khung "Thêm sản phẩm" ở dưới đáy (trắng, bo góc, lơ lửng) */
+.combo-box-popup .list-cell {
+    -fx-padding: 9 14;
+    -fx-font-size: 14px;
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #374151;
+}
+
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: #D1FAE5;
+    -fx-text-fill: #1B4332;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #2D6A4F;
+    -fx-text-fill: white;
+}
+
+/* ══════════════════════════════════════════════════════════
+   DASHBOARD — LAYOUT
+   ══════════════════════════════════════════════════════════ */
+
+/* ── OVERALL BACKGROUND ─────────────────────────────────── */
+.dashboard-root {
+    -fx-background-color: #EEF3F0;
+}
+
+/* ── SIDEBAR ─────────────────────────────────────────────── */
+.sidebar {
+    -fx-background-color: #1A2E22;
+    -fx-min-height: 650;
+    -fx-padding: 0 0 20 0;
+}
+
+.sidebar-logo-area {
+    -fx-padding: 24 20 22 20;
+    -fx-border-color: transparent transparent #2A4535 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.sidebar-logo-icon {
+    -fx-font-size: 22px;
+}
+
+.sidebar-logo-text {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ECFDF5;
+}
+
+.sidebar-section-label {
+    -fx-font-size: 10.5px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #52796F;
+    -fx-padding: 22 20 6 20;
+}
+
+/* Non-active sidebar nav item */
+.sidebar-item {
+    -fx-padding: 11 20;
+    -fx-cursor: hand;
+    -fx-background-color: transparent;
+}
+
+.sidebar-item:hover {
+    -fx-background-color: #243B2E;
+}
+
+.sidebar-item .sidebar-item-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: #A7C4B5;
+}
+
+.sidebar-item:hover .sidebar-item-text {
+    -fx-text-fill: #ECFDF5;
+}
+
+/* Active sidebar nav item */
+.sidebar-item-active {
+    -fx-padding: 11 20;
+    -fx-cursor: hand;
+    -fx-background-color: #2D6A4F;
+    -fx-background-radius: 0;
+}
+
+.sidebar-item-active .sidebar-item-text {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ECFDF5;
+}
+
+.sidebar-item-icon {
+    -fx-font-size: 15px;
+}
+
+/* ── HEADER BAR ──────────────────────────────────────────── */
+.header-bar {
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.07), 10, 0, 0, 2);
+    -fx-padding: 14 24 14 24;
+    -fx-border-color: transparent transparent #E5E7EB transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.header-title {
+    -fx-font-size: 19px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1A2E22;
+}
+
+/* Logout button (subtle, outlined) */
+.btn-logout {
+    -fx-background-color: #F3F4F6;
+    -fx-text-fill: #374151;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-border-color: #D1D5DB;
+    -fx-border-radius: 8;
+    -fx-cursor: hand;
+    -fx-padding: 8 16;
+    -fx-effect: none;
+}
+
+.btn-logout:hover {
+    -fx-background-color: #E5E7EB;
+    -fx-border-color: #9CA3AF;
+}
+
+/* ── CONTENT AREA ────────────────────────────────────────── */
+.content-area {
+    -fx-padding: 24 24 16 24;
+}
+
+.page-title {
+    -fx-font-size: 25px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1A2E22;
+}
+
+.page-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #6B7280;
+    -fx-padding: 2 0 0 0;
+}
+
+/* ── STAT CARDS ──────────────────────────────────────────── */
+.stat-card {
+    -fx-background-radius: 14;
+    -fx-padding: 20 16;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 3);
+    -fx-alignment: center;
+}
+
+/* Dark green — Total */
+.stat-card-primary {
+    -fx-background-color: #1A2E22;
+}
+
+/* Medium green — Highest price */
+.stat-card-green {
+    -fx-background-color: #2D6A4F;
+}
+
+/* Teal — Most bids */
+.stat-card-teal {
+    -fx-background-color: #0E7490;
+}
+
+.stat-number {
+    -fx-font-size: 42px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.stat-number-sm {
+    -fx-font-size: 21px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.stat-sublabel {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #A7F3D0;
+    -fx-padding: 2 0 0 0;
+}
+
+.stat-label {
+    -fx-font-size: 12.5px;
+    -fx-text-fill: rgba(255,255,255,0.75);
+    -fx-padding: 5 0 0 0;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+}
+
+/* ── DATA TABLE ──────────────────────────────────────────── */
+.data-table {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #E5E7EB;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.07), 8, 0, 0, 2);
+    -fx-font-size: 14px;
+}
+
+.data-table .column-header-background {
+    -fx-background-color: #F9FAFB;
+    -fx-background-radius: 12 12 0 0;
+}
+
+.data-table .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #E5E7EB transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.data-table .column-header .label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #52796F;
+    -fx-padding: 10 8;
+}
+
+.data-table .table-cell {
+    -fx-text-fill: #1F2937;
+    -fx-border-color: transparent transparent #F3F4F6 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 10 8;
+}
+
+.data-table .table-row-cell:hover {
+    -fx-background-color: #F0FDF4;
+}
+
+.data-table .table-row-cell:selected {
+    -fx-background-color: #D1FAE5;
+}
+
+.data-table .table-row-cell:selected .table-cell {
+    -fx-text-fill: #1A2E22;
+}
+
+/* Remove default focus border on table */
+.data-table:focused {
+    -fx-border-color: #E5E7EB;
+}
+
+/* ── ADD PRODUCT CARD ────────────────────────────────────── */
 .add-product-card {
     -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 14 16;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.07), 8, 0, 0, 2);
+    -fx-border-color: #E5E7EB;
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+}
+
+.form-input {
+    -fx-background-color: #F6FAF8;
+    -fx-border-color: #C8D9D2;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-font-size: 13px;
+    -fx-padding: 8 12;
+    -fx-text-fill: #1A2E22;
+    -fx-prompt-text-fill: #9AB5AA;
+}
+
+.form-input:focused {
+    -fx-border-color: #2D6A4F;
+    -fx-background-color: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(45,106,79,0.18), 6, 0, 0, 0);
+}
+
+/* Green "add" button */
+.btn-add {
+    -fx-background-color: #2D6A4F;
+    -fx-text-fill: white;
+    -fx-font-size: 13.5px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 9;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(27,67,50,0.22), 6, 0, 0, 2);
+}
+
+.btn-add:hover {
+    -fx-background-color: #1B4332;
+}
+
+/* Red "delete" button */
+.btn-delete {
+    -fx-background-color: #FEE2E2;
+    -fx-text-fill: #DC2626;
+    -fx-font-size: 13.5px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 9;
+    -fx-border-color: #FECACA;
+    -fx-border-radius: 9;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+    -fx-effect: none;
+}
+
+.btn-delete:hover {
+    -fx-background-color: #DC2626;
+    -fx-text-fill: white;
+    -fx-border-color: #DC2626;
+}
+
+/* ══════════════════════════════════════════════════════════
+   BID POPUP
+   ══════════════════════════════════════════════════════════ */
+
+.bid-root {
+    -fx-background-color: linear-gradient(to bottom right, #1B4332, #52B788);
+    -fx-padding: 30;
+}
+
+.bid-card {
+    -fx-background-color: white;
+    -fx-background-radius: 18;
+    -fx-padding: 36 32 32 32;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.22), 24, 0, 0, 8);
+}
+
+.bid-header-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #52796F;
+}
+
+.bid-product-name {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1A2E22;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+}
+
+.bid-current-price {
+    -fx-font-size: 14px;
+    -fx-text-fill: #6B7280;
+    -fx-padding: 0 0 4 0;
+}
+
+.bid-input {
+    -fx-background-color: #F6FAF8;
+    -fx-border-color: #C8D9D2;
+    -fx-border-radius: 10;
     -fx-background-radius: 10;
-    -fx-padding: 15;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 2);
+    -fx-font-size: 15px;
+    -fx-padding: 12 14;
+    -fx-text-fill: #1A2E22;
+    -fx-prompt-text-fill: #9AB5AA;
+}
+
+.bid-input:focused {
+    -fx-border-color: #2D6A4F;
+    -fx-background-color: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(45,106,79,0.25), 8, 0, 0, 0);
+}
+
+.btn-bid {
+    -fx-background-color: #2D6A4F;
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 11;
+    -fx-cursor: hand;
+    -fx-pref-height: 48;
+    -fx-effect: dropshadow(three-pass-box, rgba(27,67,50,0.3), 10, 0, 0, 4);
+}
+
+.btn-bid:hover {
+    -fx-background-color: #1B4332;
+}
+
+.btn-bid:pressed {
+    -fx-background-color: #0F2B1F;
+    -fx-effect: none;
+}
+
+/* ══════════════════════════════════════════════════════════
+   LINE CHART — Green theme
+   ══════════════════════════════════════════════════════════ */
+
+.chart-plot-background {
+    -fx-background-color: white;
+}
+
+.chart-content {
+    -fx-padding: 10 16 10 10;
+}
+
+.chart-vertical-grid-lines {
+    -fx-stroke: #E5E7EB;
+    -fx-stroke-dash-array: 5 5;
+}
+
+.chart-horizontal-grid-lines {
+    -fx-stroke: #E5E7EB;
+    -fx-stroke-dash-array: 5 5;
+}
+
+.chart-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1A2E22;
+    -fx-padding: 12 0 8 0;
+}
+
+.axis-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6B7280;
+}
+
+.axis > .tick-mark {
+    -fx-stroke: #D1D5DB;
+}
+
+.axis > .tick-label {
+    -fx-font-size: 11px;
+    -fx-fill: #9CA3AF;
+}
+
+/* Đường series xanh lá (thay cam mặc định) */
+.default-color0.chart-series-line {
+    -fx-stroke: #2D6A4F;
+    -fx-stroke-width: 2.5px;
+}
+
+/* Chấm tròn trên mỗi điểm dữ liệu */
+.default-color0.chart-line-symbol {
+    -fx-background-color: #2D6A4F, white;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 6px;
+    -fx-padding: 6px;
+}
+
+.chart-legend {
+    -fx-background-color: transparent;
+    -fx-padding: 4 10;
+}
+
+.chart-legend-item-symbol.default-color0 {
+    -fx-background-color: #2D6A4F, white;
+}
+
+.chart-legend-item {
+    -fx-font-size: 12px;
+    -fx-text-fill: #374151;
 }

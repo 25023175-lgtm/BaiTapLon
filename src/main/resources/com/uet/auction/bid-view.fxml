@@ -5,11 +5,45 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="350.0" spacing="15.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uet.auction.BidController">
+<VBox alignment="CENTER" prefHeight="320.0" prefWidth="420.0"
+      stylesheets="@styles.css" styleClass="bid-root"
+      xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.uet.auction.BidController">
    <children>
-      <Label fx:id="productNameLabel" style="-fx-font-weight: bold;" text="Tên sản phẩm" />
-      <Label fx:id="currentPriceLabel" text="Giá hiện tại: 0 VNĐ" />
-      <TextField fx:id="bidAmountField" maxWidth="250.0" promptText="Nhập số tiền bạn muốn trả..." />
-      <Button mnemonicParsing="false" onAction="#handlePlaceBid" text="Ra giá" />
+
+      <VBox styleClass="bid-card" spacing="18.0" alignment="CENTER"
+            maxWidth="340.0">
+         <children>
+
+            <!-- Header label -->
+            <Label styleClass="bid-header-label" text="ĐẶT GIÁ ĐẤU" />
+
+            <!-- Product name -->
+            <Label fx:id="productNameLabel"
+                   styleClass="bid-product-name"
+                   text="Tên sản phẩm"
+                   maxWidth="290.0"
+                   wrapText="true" />
+
+            <!-- Current price -->
+            <Label fx:id="currentPriceLabel"
+                   styleClass="bid-current-price"
+                   text="Giá hiện tại: 0 VNĐ" />
+
+            <!-- Bid amount input -->
+            <TextField fx:id="bidAmountField"
+                       prefHeight="48.0" prefWidth="290.0"
+                       styleClass="bid-input"
+                       promptText="Nhập số tiền bạn muốn trả..." />
+
+            <!-- Place bid button -->
+            <Button mnemonicParsing="false" onAction="#handlePlaceBid"
+                    prefWidth="290.0"
+                    styleClass="btn-bid"
+                    text="🔨   Ra Giá" />
+
+         </children>
+      </VBox>
+
    </children>
 </VBox>

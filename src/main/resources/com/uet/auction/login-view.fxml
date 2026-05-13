@@ -9,26 +9,60 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="500.0" prefWidth="700.0" stylesheets="@styles.css" styleClass="root-background" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uet.auction.LoginController">
+<VBox alignment="CENTER" prefHeight="520.0" prefWidth="720.0"
+      stylesheets="@styles.css" styleClass="root-background"
+      xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.uet.auction.LoginController">
    <children>
 
-      <VBox alignment="CENTER" maxWidth="400.0" spacing="20.0" styleClass="login-card">
+      <VBox alignment="CENTER" maxWidth="380.0" spacing="18.0" styleClass="login-card">
          <children>
-            <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1877F2;" text="ĐĂNG NHẬP" />
 
-            <TextField fx:id="usernameField" prefHeight="40.0" promptText="Tên đăng nhập" style="-fx-font-size: 14px;" />
+            <!-- ── Logo / Title ── -->
+            <Label style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #52796F;"
+                   text="🏷️  AUCTIONUET" />
 
-            <StackPane alignment="CENTER_RIGHT">
+            <Label style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #1A2E22;
+                          -fx-padding: 0 0 4 0;"
+                   text="Đăng nhập" />
+
+            <!-- ── Username ── -->
+            <TextField fx:id="usernameField"
+                       prefHeight="44.0" prefWidth="330.0"
+                       promptText="Tên đăng nhập" />
+
+            <!-- ── Password (with toggle) ── -->
+            <StackPane alignment="CENTER_RIGHT" prefWidth="330.0">
                <children>
-                  <PasswordField fx:id="hiddenPasswordField" prefHeight="40.0" promptText="Mật khẩu" style="-fx-font-size: 14px; -fx-padding: 0 40 0 10;" />
-                  <TextField fx:id="visiblePasswordField" prefHeight="40.0" promptText="Mật khẩu" style="-fx-font-size: 14px; -fx-padding: 0 40 0 10;" visible="false" />
-                  <ToggleButton fx:id="togglePasswordBtn" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 16px;" text="👁" />
+                  <PasswordField fx:id="hiddenPasswordField"
+                                 prefHeight="44.0" prefWidth="330.0"
+                                 promptText="Mật khẩu"
+                                 style="-fx-padding: 0 44 0 15;" />
+                  <TextField fx:id="visiblePasswordField"
+                             prefHeight="44.0" prefWidth="330.0"
+                             promptText="Mật khẩu"
+                             style="-fx-padding: 0 44 0 15;"
+                             visible="false" />
+                  <ToggleButton fx:id="togglePasswordBtn"
+                                style="-fx-background-color: transparent; -fx-cursor: hand;
+                                       -fx-font-size: 16px; -fx-padding: 0 10 0 0;"
+                                text="👁" />
                </children>
             </StackPane>
 
-            <Button mnemonicParsing="false" onAction="#handleLogin" prefHeight="45.0" prefWidth="400.0" style="-fx-background-color: #1877F2; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 8px; -fx-cursor: hand;" text="Đăng nhập" />
+            <!-- ── Login button ── -->
+            <Button mnemonicParsing="false" onAction="#handleLogin"
+                    prefHeight="46.0" prefWidth="330.0"
+                    style="-fx-background-color: #2D6A4F; -fx-text-fill: white;
+                           -fx-font-size: 15px; -fx-font-weight: bold;
+                           -fx-background-radius: 10; -fx-cursor: hand;"
+                    text="Đăng nhập" />
 
-            <Hyperlink fx:id="registerLink" onAction="#handleSwitchToRegister" style="-fx-font-size: 14px; -fx-text-fill: #1877F2;" text="Chưa có tài khoản? Đăng kí ngay" />
+            <!-- ── Register link ── -->
+            <Hyperlink fx:id="registerLink" onAction="#handleSwitchToRegister"
+                       style="-fx-font-size: 13px; -fx-text-fill: #2D6A4F;"
+                       text="Chưa có tài khoản? Đăng kí ngay" />
+
          </children>
       </VBox>
 
