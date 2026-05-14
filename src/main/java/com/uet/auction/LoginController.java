@@ -3,44 +3,31 @@ package com.uet.auction;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 
 public class LoginController {
 
-    @FXML
-    private TextField usernameField;
+    @FXML private TextField usernameField;
+    @FXML private PasswordField hiddenPasswordField;
+    @FXML private TextField visiblePasswordField;
+    @FXML private ToggleButton togglePasswordBtn;
 
-    // Đã sửa tên biến để khớp với FXML mới
-    @FXML
-    private PasswordField hiddenPasswordField;
-
-    // Khai báo thêm 2 biến mới cho tính năng "con mắt"
-    @FXML
-    private TextField visiblePasswordField;
-
-    @FXML
-    private ToggleButton togglePasswordBtn;
-
-    // HÀM KHỞI TẠO: Chạy ngay khi màn hình vừa mở lên
     @FXML
     public void initialize() {
-        // 1. Đồng bộ 2 ô text
         visiblePasswordField.textProperty().bindBidirectional(hiddenPasswordField.textProperty());
 
-        // 2. Bắt sự kiện click vào con mắt
         togglePasswordBtn.setOnAction(event -> {
             if (togglePasswordBtn.isSelected()) {
-                // Đang bấm xuống -> Mở mắt -> Hiện chữ, Ẩn dấu chấm
                 visiblePasswordField.setVisible(true);
                 hiddenPasswordField.setVisible(false);
-                togglePasswordBtn.setText("🙈"); // Icon nhắm mắt
+                togglePasswordBtn.setText("🙈");
             } else {
-                // Nhả ra -> Nhắm mắt -> Ẩn chữ, Hiện dấu chấm
                 visiblePasswordField.setVisible(false);
                 hiddenPasswordField.setVisible(true);
-                togglePasswordBtn.setText("👁");  // Icon mở mắt
+                togglePasswordBtn.setText("👁");
             }
         });
     }
@@ -48,51 +35,104 @@ public class LoginController {
     @FXML
     private void handleLogin(ActionEvent event) {
         String username = usernameField.getText();
-
-
         String password = hiddenPasswordField.getText();
 
-        // 1. Kiểm tra bỏ trống
         if (username.isEmpty() || password.isEmpty()) {
-            showErrorAlert("Lỗi nhập liệu", "Vui lòng điền đầy đủ thông tin!");
+            showErrorAlert("Lỗi nhập liệu", "Vui lòng điền đầy đủ\ntên đăng nhập và mật khẩu!");
             return;
         }
 
-        // 2. Kéo dữ liệu từ kho lên để đối chiếu
         java.util.List<com.auction.model.User> users = DataManager.loadUsers();
         boolean isSuccess = false;
 
         for (com.auction.model.User u : users) {
-            // Kiểm tra xem tên đăng nhập và mật khẩu có khớp 100% không
             if (u.getUsername().equals(username) && u.getPassword().equals(password)) {
-
-                // Đăng nhập đúng -> Cấp "Thẻ căn cước" SessionManager
                 SessionManager.getInstance().setCurrentUser(u);
                 isSuccess = true;
-                break; // Tìm thấy rồi thì dừng vòng lặp
+                break;
             }
         }
 
-        // 3. Quyết định cho vào hay đuổi ra
         if (isSuccess) {
-            System.out.println("Đăng nhập thành công với vai trò: " + SessionManager.getInstance().getCurrentUser().getRole());
+            System.out.println("Đăng nhập thành công với vai trò: "
+                    + SessionManager.getInstance().getCurrentUser().getRole());
             SceneManager.switchScene("dashboard-view.fxml", "Hệ thống Đấu giá UET - Trang chủ");
         } else {
-            showErrorAlert("Đăng nhập thất bại", "Tài khoản không tồn tại hoặc sai mật khẩu!");
+            showErrorAlert("Đăng nhập thất bại",
+                    "Tài khoản không tồn tại\nhoặc mật khẩu không đúng!");
         }
     }
 
     @FXML
     private void handleSwitchToRegister(ActionEvent event) {
-        // chuyển thẳng sang màn hình Đăng ký
         SceneManager.switchScene("register-view.fxml", "Hệ thống Đấu giá - Đăng ký");
     }
 
+    // ── Alert lỗi có style xanh lá / đỏ ──────────────────────────────
     private void showErrorAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+        Alert alert = new Alert(Alert.AlertType.NONE);
         alert.setTitle(title);
         alert.setHeaderText(null);
-        alert.setContentText(content);
+
+        // Chọn màu header theo loại lỗi
+        boolean isLoginFail = title.toLowerCase().contains("thất bại")
+                || title.toLowerCase().contains("mật khẩu");
+        String headerColor = isLoginFail ? "#DC2626" : "#D97706"; // đỏ hoặc cam
+        String iconText    = isLoginFail ? "🔐" : "⚠️";
+
+        // ── Header ────────────────────────────────────────────────────
+        javafx.scene.layout.VBox header = new javafx.scene.layout.VBox(8);
+        header.setStyle(
+                "-fx-background-color: " + headerColor + ";" +
+                        "-fx-padding: 22 24 18 24;" +
+                        "-fx-alignment: CENTER;"
+        );
+        javafx.scene.control.Label iconLabel = new javafx.scene.control.Label(iconText);
+        iconLabel.setStyle("-fx-font-size: 30px;");
+
+        javafx.scene.control.Label titleLabel = new javafx.scene.control.Label(title);
+        titleLabel.setStyle(
+                "-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;"
+        );
+        header.getChildren().addAll(iconLabel, titleLabel);
+
+        // ── Body ──────────────────────────────────────────────────────
+        javafx.scene.layout.VBox body = new javafx.scene.layout.VBox(0);
+        body.setStyle(
+                "-fx-background-color: white;" +
+                        "-fx-padding: 18 24 12 24;" +
+                        "-fx-alignment: CENTER;"
+        );
+        javafx.scene.control.Label msgLabel = new javafx.scene.control.Label(content);
+        msgLabel.setStyle(
+                "-fx-font-size: 13.5px; -fx-text-fill: #374151;" +
+                        "-fx-text-alignment: center; -fx-line-spacing: 3;"
+        );
+        msgLabel.setWrapText(true);
+        body.getChildren().add(msgLabel);
+
+        // ── Assemble ──────────────────────────────────────────────────
+        javafx.scene.layout.VBox root = new javafx.scene.layout.VBox(0);
+        root.setStyle("-fx-background-color: white;");
+        root.setPrefWidth(320);
+        root.getChildren().addAll(header, body);
+
+        alert.getDialogPane().setContent(root);
+        alert.getDialogPane().setStyle("-fx-background-color: white; -fx-padding: 0;");
+
+        ButtonType btnOk = new ButtonType("Đã hiểu",
+                javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
+        alert.getButtonTypes().setAll(btnOk);
+
+        alert.setOnShown(ev -> {
+            javafx.scene.Node btn = alert.getDialogPane().lookupButton(btnOk);
+            if (btn != null) btn.setStyle(
+                    "-fx-background-color: " + headerColor + "; -fx-text-fill: white;" +
+                            "-fx-font-size: 13px; -fx-font-weight: bold;" +
+                            "-fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 9 24;"
+            );
+        });
+
         alert.showAndWait();
     }
 }

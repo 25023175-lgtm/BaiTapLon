@@ -532,13 +532,11 @@
     -fx-fill: #9CA3AF;
 }
 
-/* Đường series xanh lá (thay cam mặc định) */
+/* ── LineChart series (giữ lại phòng khi dùng) ── */
 .default-color0.chart-series-line {
     -fx-stroke: #2D6A4F;
     -fx-stroke-width: 2.5px;
 }
-
-/* Chấm tròn trên mỗi điểm dữ liệu */
 .default-color0.chart-line-symbol {
     -fx-background-color: #2D6A4F, white;
     -fx-background-insets: 0, 2;
@@ -546,16 +544,40 @@
     -fx-padding: 6px;
 }
 
+/* ── AreaChart: đường viền xanh lá ── */
+.default-color0.chart-series-area-line {
+    -fx-stroke: #2D6A4F;
+    -fx-stroke-width: 2.5px;
+}
+
+/* ── AreaChart: vùng fill gradient từ xanh lá → trong suốt ── */
+.default-color0.chart-series-area-fill {
+    -fx-fill: linear-gradient(
+            from 0% 0% to 0% 100%,
+            rgba(45, 106, 79, 0.28) 0%,
+            rgba(45, 106, 79, 0.10) 50%,
+            rgba(45, 106, 79, 0.00) 100%
+    );
+    -fx-stroke: transparent;
+}
+
+/* ── AreaChart: chấm tròn trên mỗi điểm dữ liệu ── */
+.default-color0.chart-area-symbol {
+    -fx-background-color: #2D6A4F, white;
+    -fx-background-insets: 0, 2.5;
+    -fx-background-radius: 6px;
+    -fx-padding: 6px;
+}
+
+/* ── Ẩn legend (đã hiện ở header tay) ── */
 .chart-legend {
     -fx-background-color: transparent;
-    -fx-padding: 4 10;
+    -fx-padding: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
 }
 
-.chart-legend-item-symbol.default-color0 {
-    -fx-background-color: #2D6A4F, white;
-}
-
-.chart-legend-item {
-    -fx-font-size: 12px;
-    -fx-text-fill: #374151;
+/* ── Padding trong vùng vẽ của chart ── */
+.chart-content {
+    -fx-padding: 8 16 8 8;
 }

@@ -645,29 +645,48 @@ public class DashboardController implements Initializable {
         Stage stage = new Stage();
         stage.setTitle("Lịch sử giá: " + product.getName());
 
+        // ── Trục X ─────────────────────────────────────────────────────
         final javafx.scene.chart.NumberAxis xAxis = new javafx.scene.chart.NumberAxis();
         xAxis.setLabel("Lượt đấu giá (0 = Giá gốc)");
+        xAxis.setMinorTickVisible(false);
 
+        // ── Trục Y — format số gọn (K / M) ────────────────────────────
         final javafx.scene.chart.NumberAxis yAxis = new javafx.scene.chart.NumberAxis();
         yAxis.setLabel("Giá (VND)");
         yAxis.setForceZeroInRange(false);
+        yAxis.setMinorTickVisible(false);
+        yAxis.setTickLabelFormatter(new javafx.util.StringConverter<Number>() {
+            @Override public String toString(Number n) {
+                double v = n.doubleValue();
+                if (v >= 1_000_000_000) return String.format("%.1fB", v / 1_000_000_000);
+                if (v >= 1_000_000)     return String.format("%.0fM", v / 1_000_000);
+                if (v >= 1_000)         return String.format("%.0fK", v / 1_000);
+                return String.format("%.0f", v);
+            }
+            @Override public Number fromString(String s) { return 0; }
+        });
 
-        final javafx.scene.chart.LineChart<Number, Number> lineChart =
-                new javafx.scene.chart.LineChart<>(xAxis, yAxis);
-        lineChart.setTitle("Biểu đồ tăng trưởng giá — " + product.getName());
+        // ── AreaChart (tên biến giữ nguyên: lineChart) ─────────────────
+        final javafx.scene.chart.AreaChart<Number, Number> lineChart =
+                new javafx.scene.chart.AreaChart<>(xAxis, yAxis);
+        lineChart.setTitle(null);           // Title sẽ vẽ tay ở header
         lineChart.setCreateSymbols(true);
         lineChart.setAnimated(true);
-        lineChart.setLegendVisible(true);
+        lineChart.setLegendVisible(false);
 
+        // ── Series ─────────────────────────────────────────────────────
         javafx.scene.chart.XYChart.Series<Number, Number> series =
                 new javafx.scene.chart.XYChart.Series<>();
         series.setName("Diễn biến giá");
 
-        // [MỚI] THAY THẾ LUỒNG FILE BẰNG LUỒNG DATABASE
-        // 1. Nạp điểm đầu tiên: Mức giá gốc
+        // Điểm đầu = giá gốc
         series.getData().add(new javafx.scene.chart.XYChart.Data<>(0, product.getStartPrice()));
 
-        // 2. Kéo các lịch sử trả giá từ bảng `bids` theo đúng Product ID này
+        // Theo dõi High / Low để hiện stats bar
+        double[] statHigh = { product.getStartPrice() };
+        double[] statLow  = { product.getStartPrice() };
+
+        // ── Kéo dữ liệu từ DB ─────────────────────────────────────────
         String sql = "SELECT bid_price FROM bids WHERE product_id = ? ORDER BY bid_time ASC";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -675,10 +694,12 @@ public class DashboardController implements Initializable {
             pstmt.setInt(1, product.getId());
             ResultSet rs = pstmt.executeQuery();
 
-            int bidCounter = 1; // Lượt số 1, 2, 3...
+            int bidCounter = 1;
             while (rs.next()) {
                 double price = rs.getDouble("bid_price");
                 series.getData().add(new javafx.scene.chart.XYChart.Data<>(bidCounter, price));
+                if (price > statHigh[0]) statHigh[0] = price;
+                if (price < statLow[0])  statLow[0]  = price;
                 bidCounter++;
             }
         } catch (Exception e) {
@@ -687,51 +708,140 @@ public class DashboardController implements Initializable {
 
         lineChart.getData().add(series);
 
-        // ── Thanh header xanh đậm phía trên biểu đồ ─────────────────
-        javafx.scene.layout.HBox chartHeader = new javafx.scene.layout.HBox(10);
-        chartHeader.setStyle(
-                "-fx-background-color: #1A2E22;" +
-                        "-fx-padding: 14 20 14 20;" +
-                        "-fx-alignment: CENTER_LEFT;"
-        );
+        // ── Tính toán stats ────────────────────────────────────────────
+        double currentPrice = product.getCurrentPrice() > 0
+                ? product.getCurrentPrice() : product.getStartPrice();
+        double startPrice   = product.getStartPrice();
+        double changeAmt    = currentPrice - startPrice;
+        double changePct    = startPrice > 0 ? (changeAmt / startPrice) * 100.0 : 0.0;
+        boolean isUp        = changeAmt >= 0;
 
-        javafx.scene.control.Label chartHeaderLabel = new javafx.scene.control.Label(
-                "📈   Lịch sử giá — " + product.getName()
-        );
-        chartHeaderLabel.setStyle(
-                "-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: white;"
-        );
-        chartHeader.getChildren().add(chartHeaderLabel);
+        String fmtCurrent = String.format("%,.0f VND", currentPrice).replace(",", ".");
+        String fmtStart   = String.format("%,.0f VND", startPrice).replace(",", ".");
+        String fmtHigh    = String.format("%,.0f VND", statHigh[0]).replace(",", ".");
+        String fmtLow     = String.format("%,.0f VND", statLow[0]).replace(",", ".");
+        String fmtChange  = String.format("%s%,.0f VND",
+                isUp ? "+" : "", changeAmt).replace(",", ".");
+        String fmtPct     = String.format("(%s%.1f%%)", isUp ? "+" : "", changePct);
 
-        // ── Wrapper bao quanh biểu đồ ─────────────────────────────────
-        javafx.scene.layout.VBox chartContainer = new javafx.scene.layout.VBox(0);
-        chartContainer.setStyle("-fx-background-color: #F0F4F1;");
+        // ══════════════════════════════════════════════════════════════
+        //  LAYOUT
+        // ══════════════════════════════════════════════════════════════
 
-        javafx.scene.layout.VBox chartWrapper = new javafx.scene.layout.VBox();
-        chartWrapper.setStyle(
-                "-fx-background-color: white;" +
-                        "-fx-margin: 16;" +
-                        "-fx-padding: 0;"
-        );
+        // 1. Dark header bar (top)
+        javafx.scene.layout.HBox topBar = new javafx.scene.layout.HBox();
+        topBar.setStyle("-fx-background-color: #1A2E22; -fx-padding: 14 20; -fx-alignment: CENTER_LEFT;");
+        javafx.scene.control.Label topBarTitle = new javafx.scene.control.Label(
+                "📈   Lịch sử giá — " + product.getName());
+        topBarTitle.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: white;");
+        topBar.getChildren().add(topBarTitle);
+
+        // 2. Price header
+        javafx.scene.layout.VBox priceHeaderBox = new javafx.scene.layout.VBox(6);
+        priceHeaderBox.setStyle("-fx-padding: 20 24 12 24; -fx-background-color: white;");
+
+        javafx.scene.control.Label smallLabel = new javafx.scene.control.Label("Giá hiện tại (cao nhất)");
+        smallLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #9CA3AF;");
+
+        javafx.scene.layout.HBox priceRow = new javafx.scene.layout.HBox(12);
+        priceRow.setStyle("-fx-alignment: CENTER_LEFT;");
+
+        javafx.scene.control.Label priceLabel = new javafx.scene.control.Label(fmtCurrent);
+        priceLabel.setStyle("-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1A2E22;");
+
+        javafx.scene.control.Label pctBadge = new javafx.scene.control.Label(
+                (isUp ? "▲ " : "▼ ") + fmtPct);
+        pctBadge.setStyle(
+                "-fx-font-size: 13px; -fx-font-weight: bold;" +
+                        "-fx-background-color: " + (isUp ? "#D1FAE5" : "#FEE2E2") + ";" +
+                        "-fx-text-fill: " + (isUp ? "#059669" : "#DC2626") + ";" +
+                        "-fx-background-radius: 20; -fx-padding: 4 10;");
+
+        javafx.scene.control.Label sinceLabel = new javafx.scene.control.Label("so với giá gốc");
+        sinceLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #9CA3AF;");
+
+        priceRow.getChildren().addAll(priceLabel, pctBadge, sinceLabel);
+        priceHeaderBox.getChildren().addAll(smallLabel, priceRow);
+
+        // 3. Stats bar
+        javafx.scene.layout.HBox statsBar = new javafx.scene.layout.HBox(0);
+        statsBar.setStyle(
+                "-fx-background-color: #F9FAFB; -fx-padding: 12 24;" +
+                        "-fx-border-color: #E5E7EB; -fx-border-width: 1 0 1 0;");
+
+        // Helper: tạo 1 ô stat (label + value)
+        javafx.scene.layout.VBox cell1 = makeStatCell("Giá khởi điểm", fmtStart,  "#1F2937");
+        javafx.scene.layout.VBox cell2 = makeStatCell("Cao nhất",       fmtHigh,   "#059669");
+        javafx.scene.layout.VBox cell3 = makeStatCell("Thấp nhất",      fmtLow,    "#DC2626");
+        javafx.scene.layout.VBox cell4 = makeStatCell("Thay đổi",       fmtChange, isUp ? "#059669" : "#DC2626");
+
+        // Dividers giữa các cell
+        for (javafx.scene.layout.VBox cell : new javafx.scene.layout.VBox[]{cell1, cell2, cell3, cell4}) {
+            cell.setPrefWidth(175);
+            cell.setStyle("-fx-padding: 0 20 0 0;");
+        }
+        statsBar.getChildren().addAll(cell1, makeDivider(), cell2, makeDivider(), cell3, makeDivider(), cell4);
+
+        // 4. Chart
         javafx.scene.layout.VBox.setVgrow(lineChart, javafx.scene.layout.Priority.ALWAYS);
-        javafx.scene.layout.VBox.setVgrow(chartWrapper, javafx.scene.layout.Priority.ALWAYS);
-        chartWrapper.getChildren().add(lineChart);
 
-        chartContainer.getChildren().addAll(chartHeader, chartWrapper);
+        // 5. Assemble
+        javafx.scene.layout.VBox chartContainer = new javafx.scene.layout.VBox(0);
+        chartContainer.setStyle("-fx-background-color: white;");
+        chartContainer.getChildren().addAll(topBar, priceHeaderBox, statsBar, lineChart);
 
-        Scene scene = new Scene(chartContainer, 700, 480);
+        Scene scene = new Scene(chartContainer, 740, 540);
 
-        // Apply stylesheet để tô màu xanh lá cho đường chart
         try {
             String css = getClass().getResource("/com/uet/auction/styles.css").toExternalForm();
             scene.getStylesheets().add(css);
         } catch (Exception e) {
-            System.out.println(">> Không load được styles.css cho chart: " + e.getMessage());
+            System.out.println(">> Không load được styles.css: " + e.getMessage());
         }
 
         stage.setScene(scene);
-        stage.setMinWidth(600);
-        stage.setMinHeight(440);
+        stage.setMinWidth(620);
+        stage.setMinHeight(480);
+
+        // Gắn Tooltip vào từng điểm sau khi chart đã render
+        stage.setOnShown(ev -> {
+            for (javafx.scene.chart.XYChart.Data<Number, Number> d : series.getData()) {
+                if (d.getNode() == null) continue;
+                String tipText = "Lượt:  " + d.getXValue() + "\n" +
+                        "Giá:    " + String.format("%,.0f VND",
+                        d.getYValue().doubleValue()).replace(",", ".");
+                javafx.scene.control.Tooltip tip = new javafx.scene.control.Tooltip(tipText);
+                tip.setStyle(
+                        "-fx-font-size: 12px; -fx-font-family: 'Segoe UI';" +
+                                "-fx-background-color: white; -fx-text-fill: #1A2E22;" +
+                                "-fx-background-radius: 8; -fx-padding: 8 12;" +
+                                "-fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.15),8,0,0,2);");
+                javafx.scene.control.Tooltip.install(d.getNode(), tip);
+            }
+        });
+
         stage.show();
+    }
+
+    /** Tạo một ô thống kê nhỏ (tiêu đề + giá trị có màu) */
+    private javafx.scene.layout.VBox makeStatCell(String label, String value, String valueColor) {
+        javafx.scene.layout.VBox cell = new javafx.scene.layout.VBox(3);
+        javafx.scene.control.Label lbl = new javafx.scene.control.Label(label);
+        lbl.setStyle("-fx-font-size: 11px; -fx-text-fill: #9CA3AF;");
+        javafx.scene.control.Label val = new javafx.scene.control.Label(value);
+        val.setStyle("-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: " + valueColor + ";");
+        cell.getChildren().addAll(lbl, val);
+        return cell;
+    }
+
+    /** Tạo đường phân cách dọc giữa các stat cell */
+    private javafx.scene.layout.Region makeDivider() {
+        javafx.scene.layout.Region div = new javafx.scene.layout.Region();
+        div.setStyle("-fx-background-color: #E5E7EB; -fx-min-width: 1; -fx-pref-width: 1; -fx-margin: 0 20;");
+        div.setPrefHeight(36);
+        div.setMinWidth(1);
+        div.setMaxWidth(1);
+        javafx.scene.layout.HBox.setMargin(div, new javafx.geometry.Insets(0, 20, 0, 0));
+        return div;
     }
 }
