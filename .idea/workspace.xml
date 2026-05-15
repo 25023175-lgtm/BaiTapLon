@@ -4,40 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3cdd559f-324e-495d-9afd-4b317b85caaa" name="Changes" comment="Hoàn thành UI đăng nhập, Đăng ký và kết nối SceneManager">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/auction/common/AuthenticationException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/auction/factory/ItemFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/auction/factory/UserFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/auction/model/Admin.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/auction/model/Art.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/auction/model/Bidder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/auction/model/Electronics.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/auction/model/Item.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/auction/model/Seller.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/auction/model/Vehicle.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/auction/observer/AuctionManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/auction/observer/AuctionObserver.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/auction/observer/AuctionSubject.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/auction/factory/ItemFactoryTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/auction/factory/UserFactoryTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/auction/model/ItemTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/auction/model/RoleTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/auction/observer/AuctionManagerTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/uet/auction/AuthenticationExceptionTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/model/Bid.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/model/Bid.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/model/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/model/Product.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/auction/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/auction/model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/AuctionServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/AuctionServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/BidController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/BidController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/DashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/DashboardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/DataManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/DataManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/LoginController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/RegisterController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/RegisterController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/auction/model/ProductTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/auction/model/ProductTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/auction/model/UserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/auction/model/UserTest.java" afterDir="false" />
-    </list>
+    <list default="true" id="3cdd559f-324e-495d-9afd-4b317b85caaa" name="Changes" comment="Hoàn thành UI đăng nhập, Đăng ký và kết nối SceneManager" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -300,7 +267,7 @@
       <workItem from="1778724481257" duration="1425000" />
       <workItem from="1778741988784" duration="897000" />
       <workItem from="1778779639479" duration="2501000" />
-      <workItem from="1778824515880" duration="5612000" />
+      <workItem from="1778824515880" duration="5873000" />
     </task>
     <task id="LOCAL-00001" summary="Hoàn thành UI đăng nhập, Đăng ký và kết nối SceneManager">
       <option name="closed" value="true" />
