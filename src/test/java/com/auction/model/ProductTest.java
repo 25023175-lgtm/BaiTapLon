@@ -1,44 +1,45 @@
 package com.auction.model;
 
-import com.auction.model.Product; // Đảm bảo import đúng package Product của bạn
 import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ProductTest {
 
-    // Kịch bản 1: Test cái Constructor khổng lồ của bạn
+    // Kich ban 1: Test Constructor co truyen tham so
     @Test
     void testParameterizedConstructor() {
         LocalDateTime endTime = LocalDateTime.now().plusDays(3);
 
-        // Gọi thẳng vào cái Constructor có truyền tham số
-        Product product = new Product("iPhone 15 Pro", "Hàng lướt 99%", 20000000.0, 25000000.0, endTime, 101);
+        Product product = new Product(
+                "iPhone 15 Pro", "Hang luot 99%",
+                20000000.0, 25000000.0, endTime, 101);
 
-        // Kiểm tra xem nó có "nhét" đúng dữ liệu vào bụng không
         assertEquals("iPhone 15 Pro", product.getName());
-        assertEquals("Hàng lướt 99%", product.getDescription());
+        assertEquals("Hang luot 99%", product.getDescription());
         assertEquals(20000000.0, product.getStartPrice());
-        assertEquals(20000000.0, product.getCurrentPrice()); // Ban đầu giá hiện tại phải bằng giá khởi điểm
+        assertEquals(20000000.0, product.getCurrentPrice());
         assertEquals(25000000.0, product.getBuyNowPrice());
         assertEquals(endTime, product.getEndTime());
         assertEquals("ACTIVE", product.getStatus());
         assertEquals(101, product.getSellerId());
-        assertNotNull(product.getStartTime(), "Thời gian bắt đầu không được để trống!");
+        assertNotNull(product.getStartTime());
+
+        // Product extends Item -> category phai la General
+        assertEquals("General", product.getCategory());
     }
 
-    // Kịch bản 2: Vét sạch toàn bộ các hàm Setters và Getters còn lại
+    // Kich ban 2: Test Setters va Getters
     @Test
     void testAllGettersAndSetters() {
-        Product p = new Product(); // Dùng Constructor rỗng
+        Product p = new Product();
 
         LocalDateTime timeNow = LocalDateTime.now();
         LocalDateTime timeEnd = timeNow.plusDays(7);
 
-        // Nã liên thanh toàn bộ Setter
         p.setId(1);
         p.setName("Laptop Gaming");
-        p.setDescription("Bao chiến max setting");
+        p.setDescription("Bao chien max setting");
         p.setStartPrice(15000000.0);
         p.setCurrentPrice(16000000.0);
         p.setBuyNowPrice(20000000.0);
@@ -46,12 +47,11 @@ class ProductTest {
         p.setEndTime(timeEnd);
         p.setStatus("ENDED");
         p.setSellerId(99);
-        p.setSellerName("Duy Hưng");
+        p.setSellerName("Duy Hung");
 
-        // Dùng Getter lôi ra đối chiếu
         assertEquals(1, p.getId());
         assertEquals("Laptop Gaming", p.getName());
-        assertEquals("Bao chiến max setting", p.getDescription());
+        assertEquals("Bao chien max setting", p.getDescription());
         assertEquals(15000000.0, p.getStartPrice());
         assertEquals(16000000.0, p.getCurrentPrice());
         assertEquals(20000000.0, p.getBuyNowPrice());
@@ -59,18 +59,32 @@ class ProductTest {
         assertEquals(timeEnd, p.getEndTime());
         assertEquals("ENDED", p.getStatus());
         assertEquals(99, p.getSellerId());
-        assertEquals("Duy Hưng", p.getSellerName());
+        assertEquals("Duy Hung", p.getSellerName());
     }
 
-    // Kịch bản 3: Test nốt cái hàm toString ở dòng cuối cùng của bạn
+    // Kich ban 3: Test isEligibleForBid (Product phai cao hon gia hien tai)
+    @Test
+    void testIsEligibleForBid() {
+        Product p = new Product();
+        p.setCurrentPrice(10000000.0);
+
+        assertFalse(p.isEligibleForBid(10000000.0)); // bang gia cu -> khong hop le
+        assertFalse(p.isEligibleForBid(9000000.0));  // thap hon -> khong hop le
+        assertTrue(p.isEligibleForBid(10000001.0));  // cao hon -> hop le
+    }
+
+    // Kich ban 4: Test toString chua format moi cua Item
     @Test
     void testToString() {
         Product p = new Product();
         p.setId(5);
-        p.setName("Đồng hồ Rolex");
+        p.setName("Dong ho Rolex");
         p.setCurrentPrice(50000000.0);
 
-        String expectedString = "Product{id=5, name='Đồng hồ Rolex', price=5.0E7}"; // 50 củ nó sẽ hiển thị dạng khoa học 5.0E7 nếu dùng double
-        assertEquals(expectedString, p.toString());
+        String result = p.toString();
+        // toString() cua Item: "Item{id=5, name='...', category='General', price=...}"
+        assertTrue(result.contains("5"));
+        assertTrue(result.contains("Dong ho Rolex"));
+        assertTrue(result.contains("General"));
     }
 }

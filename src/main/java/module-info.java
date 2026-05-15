@@ -10,5 +10,8 @@ module com.uet.auction {
     opens com.uet.auction to javafx.fxml;
     exports com.uet.auction;
     exports com.auction.model;
+    exports com.auction.factory;
+    exports com.auction.observer;
+    exports com.auction.common;
     opens com.auction.model to javafx.base;
 }

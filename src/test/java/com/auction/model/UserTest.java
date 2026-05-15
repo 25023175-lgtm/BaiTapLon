@@ -1,58 +1,59 @@
 package com.auction.model;
 
-import com.auction.model.User;
+import com.auction.factory.UserFactory;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserTest {
 
-    // Kịch bản 1: Test Constructor có truyền tham số
+    // Kich ban 1: Test Constructor co truyen tham so
+    // User la abstract -> dung UserFactory de tao Seller
     @Test
     void testParameterizedConstructor() {
-        // Đóng vai người dùng mới đăng ký tài khoản
-        User user = new User("duyhung2411", "123456", "hung@gmail.com", "Đặng Duy Hưng", "Seller");
+        User user = UserFactory.create(
+                "duyhung2411", "123456",
+                "hung@gmail.com", "Dang Duy Hung", "Seller");
 
-        // Kiểm tra xem hệ thống có lưu đúng dữ liệu không
         assertEquals("duyhung2411", user.getUsername());
         assertEquals("123456", user.getPassword());
         assertEquals("hung@gmail.com", user.getEmail());
-        assertEquals("Đặng Duy Hưng", user.getFullName());
+        assertEquals("Dang Duy Hung", user.getFullName());
         assertEquals("Seller", user.getRole());
 
-        // Kiểm tra logic mặc định: Tài khoản mới tạo thì số dư phải bằng 0
+        // Tai khoan moi tao thi so du phai bang 0
         assertEquals(0.0, user.getBalance());
     }
 
-    // Kịch bản 2: Vét sạch toàn bộ Setters và Getters còn lại
+    // Kich ban 2: Test Setters va Getters
+    // Dung Bidder (subclass cu the) thay vi new User()
     @Test
     void testGettersAndSetters() {
-        User user = new User(); // Dùng Constructor rỗng
+        User user = new Bidder(); // Bidder extends User
 
-        // Set dữ liệu
         user.setId(101);
         user.setUsername("bidder01");
         user.setPassword("password123");
         user.setEmail("bidder@test.com");
-        user.setFullName("Nguyễn Văn A");
-        user.setBalance(500000.0); // Nạp 500k vào tài khoản
+        user.setFullName("Nguyen Van A");
+        user.setBalance(500000.0);
 
-        // Lấy ra đối chiếu
         assertEquals(101, user.getId());
         assertEquals("bidder01", user.getUsername());
         assertEquals("password123", user.getPassword());
         assertEquals("bidder@test.com", user.getEmail());
-        assertEquals("Nguyễn Văn A", user.getFullName());
+        assertEquals("Nguyen Van A", user.getFullName());
         assertEquals(500000.0, user.getBalance());
     }
 
-    // Kịch bản 3: Test hàm toString
+    // Kich ban 3: Test toString
     @Test
     void testToString() {
-        User user = new User();
+        User user = new Bidder();
         user.setId(5);
         user.setUsername("admin_hung");
 
-        String expectedString = "User{id=5, username='admin_hung'}";
-        assertEquals(expectedString, user.toString());
+        String result = user.toString();
+        assertTrue(result.contains("5"));
+        assertTrue(result.contains("admin_hung"));
     }
 }

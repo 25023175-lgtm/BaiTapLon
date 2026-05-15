@@ -1,5 +1,6 @@
 package com.uet.auction;
 
+import com.auction.common.AuthenticationException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -53,13 +54,15 @@ public class LoginController {
             }
         }
 
-        if (isSuccess) {
-            System.out.println("Đăng nhập thành công với vai trò: "
-                    + SessionManager.getInstance().getCurrentUser().getRole());
-            SceneManager.switchScene("dashboard-view.fxml", "Hệ thống Đấu giá UET - Trang chủ");
-        } else {
-            showErrorAlert("Đăng nhập thất bại",
-                    "Tài khoản không tồn tại\nhoặc mật khẩu không đúng!");
+        try {
+            if (!isSuccess) {
+                throw new AuthenticationException(
+                        "Tai khoan khong ton tai hoac mat khau sai!");
+            }
+            SceneManager.switchScene("dashboard-view.fxml",
+                    "He thong Dau gia UET - Trang chu");
+        } catch (AuthenticationException e) {
+            showErrorAlert("Dang nhap that bai", e.getMessage());
         }
     }
 

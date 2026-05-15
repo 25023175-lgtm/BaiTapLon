@@ -1,6 +1,6 @@
 package com.uet.auction;
 
-import com.auction.model.Product;
+import com.auction.model.Item;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -19,10 +19,10 @@ public class BidController {
     @FXML private Label currentPriceLabel;
     @FXML private TextField bidAmountField;
 
-    private Product currentProduct;
+    private Item currentProduct;
 
     // 1. Nhận dữ liệu từ Dashboard
-    public void setProductData(Product product) {
+    public void setProductData(Item product) {
         this.currentProduct = product;
         productNameLabel.setText("Đang đấu giá: " + product.getName());
 

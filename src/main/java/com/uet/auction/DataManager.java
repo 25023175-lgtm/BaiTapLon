@@ -1,14 +1,21 @@
 package com.uet.auction;
 
+import com.auction.factory.UserFactory;
+import com.auction.model.Item;
+import com.auction.model.Product;
 import com.auction.model.User;
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DataManager {
 
     // =========================================
-    // PHẦN 1: QUẢN LÝ NGƯỜI DÙNG (USERS)
+    // PHAN 1: QUAN LY NGUOI DUNG (USERS)
     // =========================================
     public static List<User> loadUsers() {
         List<User> users = new ArrayList<>();
@@ -19,24 +26,28 @@ public class DataManager {
              ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
-                User u = new User(
+                // Dung UserFactory thay vi new User() truc tiep
+                User u = UserFactory.createFromDb(
+                        rs.getInt("id"),
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("email"),
                         rs.getString("full_name"),
-                        rs.getString("role")
+                        rs.getString("role"),
+                        rs.getDouble("balance")
                 );
-                u.setId(rs.getInt("id"));
                 users.add(u);
             }
         } catch (SQLException e) {
-            System.out.println(">> Lỗi khi tải danh sách User từ DB: " + e.getMessage());
+            System.out.println(">> Loi tai User tu DB: " + e.getMessage());
         }
         return users;
     }
 
     public static void saveUser(User user) {
-        String sql = "INSERT INTO users (username, password, email, full_name, role) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users "
+                + "(username, password, email, full_name, role) "
+                + "VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -45,38 +56,35 @@ public class DataManager {
             pstmt.setString(3, user.getEmail());
             pstmt.setString(4, user.getFullName());
             pstmt.setString(5, user.getRole());
-
             pstmt.executeUpdate();
-            System.out.println(">> Đã lưu thành công User [" + user.getUsername() + "] vào MySQL!");
+            System.out.println(">> Da luu User [" + user.getUsername() + "]");
 
         } catch (SQLException e) {
-            System.out.println(">> Lỗi khi lưu User vào DB: " + e.getMessage());
+            System.out.println(">> Loi luu User: " + e.getMessage());
         }
     }
 
     // =========================================
-    // PHẦN 2: QUẢN LÝ SẢN PHẨM (PRODUCTS)
+    // PHAN 2: QUAN LY SAN PHAM (ITEMS/PRODUCTS)
     // =========================================
-    public static java.util.List<com.auction.model.Product> loadProducts() {
-        java.util.List<com.auction.model.Product> products = new java.util.ArrayList<>();
+    public static List<Item> loadProducts() {
+        List<Item> products = new ArrayList<>();
+        String sql = "SELECT p.*, u.full_name, u.email "
+                + "FROM products p "
+                + "LEFT JOIN users u ON p.seller_username = u.id";
 
-        // [MỚI] Câu lệnh JOIN lấy toàn bộ thông tin sản phẩm VÀ thông tin người bán
-        String sql = "SELECT p.*, u.full_name, u.email " +
-                "FROM products p " +
-                "LEFT JOIN users u ON p.seller_username = u.id";
-
-        try (java.sql.Connection conn = DatabaseConnection.getConnection();
-             java.sql.PreparedStatement pstmt = conn.prepareStatement(sql);
-             java.sql.ResultSet rs = pstmt.executeQuery()) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
-                // Khắc phục ID người bán
                 int sellerId = 0;
                 try {
                     sellerId = Integer.parseInt(rs.getString("seller_username"));
-                } catch (NumberFormatException ignored) {}
+                } catch (NumberFormatException ignored) { }
 
-                com.auction.model.Product p = new com.auction.model.Product(
+                // Van dung Product (extends Item) de giu tuong thich voi GUI
+                Product p = new Product(
                         rs.getString("name"),
                         rs.getString("description"),
                         rs.getDouble("start_price"),
@@ -84,25 +92,31 @@ public class DataManager {
                         rs.getTimestamp("end_time").toLocalDateTime(),
                         sellerId
                 );
-
                 p.setId(rs.getInt("id"));
                 p.setCurrentPrice(rs.getDouble("current_price"));
                 p.setBidCount(rs.getInt("bid_count"));
-
-                // [MỚI] Gán Tên và Email nhặt được từ bảng users
                 p.setSellerName(rs.getString("full_name"));
                 p.setSellerEmail(rs.getString("email"));
 
+                // Doc trang thai neu co
+                try {
+                    String st = rs.getString("status");
+                    if (st != null) p.setStatus(st);
+                } catch (SQLException ignored) { }
+
                 products.add(p);
             }
-        } catch (java.sql.SQLException e) {
-            System.out.println(">> Lỗi khi tải danh sách Sản phẩm từ DB: " + e.getMessage());
+        } catch (SQLException e) {
+            System.out.println(">> Loi tai san pham tu DB: " + e.getMessage());
         }
         return products;
     }
 
-    public static void saveProduct(com.auction.model.Product product) {
-        String sql = "INSERT INTO products (name, description, start_price, current_price, buy_now_price, seller_username, end_time) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    public static void saveProduct(Item product) {
+        String sql = "INSERT INTO products "
+                + "(name, description, start_price, current_price, "
+                + "buy_now_price, seller_username, end_time, status) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -113,137 +127,206 @@ public class DataManager {
             pstmt.setDouble(4, product.getCurrentPrice());
             pstmt.setDouble(5, product.getBuyNowPrice());
             pstmt.setString(6, String.valueOf(product.getSellerId()));
-            pstmt.setTimestamp(7, java.sql.Timestamp.valueOf(product.getEndTime()));
+            pstmt.setTimestamp(7,
+                    java.sql.Timestamp.valueOf(product.getEndTime()));
+            pstmt.setString(8, product.getStatus() != null
+                    ? product.getStatus() : "ACTIVE");
 
             pstmt.executeUpdate();
-            System.out.println(">> Đã lưu thành công Sản phẩm [" + product.getName() + "] vào MySQL!");
-
-            // [MỚI] BÁO CHO SERVER BIẾT VỪA CÓ HÀNG MỚI
+            System.out.println(">> Da luu san pham [" + product.getName() + "]");
             notifyServer();
 
         } catch (SQLException e) {
-            System.out.println(">> Lỗi khi lưu Sản phẩm vào DB: " + e.getMessage());
+            System.out.println(">> Loi luu san pham: " + e.getMessage());
         }
     }
 
-    public static void deleteProduct(com.auction.model.Product product) {
+    public static void deleteProduct(Item product) {
         String sql = "DELETE FROM products WHERE id = ?";
-
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, product.getId());
             pstmt.executeUpdate();
-            System.out.println(">> Đã xóa thành công Sản phẩm [" + product.getName() + "] khỏi Database!");
-
-            // [MỚI] BÁO CHO SERVER BIẾT VỪA XÓA HÀNG
+            System.out.println(">> Da xoa san pham [" + product.getName() + "]");
             notifyServer();
 
         } catch (SQLException e) {
-            System.out.println(">> Lỗi khi xóa Sản phẩm: " + e.getMessage());
+            System.out.println(">> Loi xoa san pham: " + e.getMessage());
         }
     }
 
-    // HÀM CẬP NHẬT GIÁ VÀ THỜI GIAN SẢN PHẨM (Đã nâng cấp Anti-Sniping)
-    public static void updateProduct(com.auction.model.Product product) {
-        // [MỚI] Thêm end_time = ? vào câu lệnh SQL
-        String sql = "UPDATE products SET current_price = ?, bid_count = ?, end_time = ? WHERE id = ?";
+    public static void updateProduct(Item product) {
+        String sql = "UPDATE products "
+                + "SET current_price = ?, bid_count = ?, "
+                + "end_time = ?, status = ? WHERE id = ?";
 
-        try (java.sql.Connection conn = DatabaseConnection.getConnection();
-             java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setDouble(1, product.getCurrentPrice());
-            pstmt.setInt(2, product.getBidCount()); // Cập nhật số lượt đấu giá
-
-            // Lưu thời gian kết thúc mới (nếu có cộng giờ thì nó sẽ lưu giờ mới)
-            pstmt.setTimestamp(3, java.sql.Timestamp.valueOf(product.getEndTime()));
-
-            pstmt.setInt(4, product.getId());
+            pstmt.setInt(2, product.getBidCount());
+            pstmt.setTimestamp(3,
+                    java.sql.Timestamp.valueOf(product.getEndTime()));
+            pstmt.setString(4,
+                    product.getStatus() != null ? product.getStatus() : "ACTIVE");
+            pstmt.setInt(5, product.getId());
 
             pstmt.executeUpdate();
-            System.out.println(">> Đã cập nhật giá & thời gian mới cho Sản phẩm ID [" + product.getId() + "]");
-
-            // Báo cho Server phát loa cho người khác
             notifyServer();
 
-        } catch (java.sql.SQLException e) {
-            System.out.println(">> Lỗi khi cập nhật giá Sản phẩm: " + e.getMessage());
+        } catch (SQLException e) {
+            System.out.println(">> Loi cap nhat san pham: " + e.getMessage());
         }
     }
 
     public static void saveBid(int productId, double bidPrice) {
         String sql = "INSERT INTO bids (product_id, bid_price) VALUES (?, ?)";
-
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, productId);
             pstmt.setDouble(2, bidPrice);
             pstmt.executeUpdate();
-            System.out.println(">> Đã ghi nhận lịch sử: Sản phẩm ID " + productId + " có mức giá mới " + bidPrice);
 
         } catch (SQLException e) {
-            System.out.println(">> Lỗi khi lưu lịch sử Bid: " + e.getMessage());
+            System.out.println(">> Loi luu bid: " + e.getMessage());
         }
     }
 
-
     // =========================================
-    // PHẦN 3: GIAO TIẾP MẠNG (REAL-TIME SERVER)
+    // PHAN 3: TU DONG DONG PHIEN & XAC DINH WINNER
     // =========================================
 
     /**
-     * Hàm này cắm một cái ăng-ten để nghe lệnh từ Server.
-     * Hễ Server hô "REFRESH_DATA" là tự động kéo MySQL về nạp lên bảng.
+     * Dong cac phien da het han, tra ve danh sach san pham vua dong.
+     * Duoc goi dinh ky boi AuctionManager scheduler.
      */
-    public static void startRealtimeListener(com.uet.auction.DashboardController controller) {
+    public static List<Item> closeExpiredAuctions() {
+        List<Item> closed = new ArrayList<>();
+        String sql = "UPDATE products "
+                + "SET status = 'ENDED' "
+                + "WHERE status = 'ACTIVE' AND end_time <= NOW()";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            int rows = pstmt.executeUpdate();
+            if (rows > 0) {
+                // Lay danh sach san pham vua bi dong
+                String selectSql = "SELECT p.*, u.full_name, u.email "
+                        + "FROM products p "
+                        + "LEFT JOIN users u ON p.seller_username = u.id "
+                        + "WHERE p.status = 'ENDED' "
+                        + "AND p.end_time >= NOW() - INTERVAL 1 MINUTE";
+
+                try (PreparedStatement ps2 = conn.prepareStatement(selectSql);
+                     ResultSet rs = ps2.executeQuery()) {
+                    while (rs.next()) {
+                        Product p = new Product(
+                                rs.getString("name"),
+                                rs.getString("description"),
+                                rs.getDouble("start_price"),
+                                rs.getDouble("buy_now_price"),
+                                rs.getTimestamp("end_time").toLocalDateTime(),
+                                0
+                        );
+                        p.setId(rs.getInt("id"));
+                        p.setCurrentPrice(rs.getDouble("current_price"));
+                        p.setStatus("ENDED");
+                        closed.add(p);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(">> Loi dong phien: " + e.getMessage());
+        }
+        return closed;
+    }
+
+    /**
+     * Lay ten nguoi thang cuoc (bidder co gia cao nhat trong san pham).
+     */
+    public static String getWinnerForItem(int productId) {
+        String sql = "SELECT u.full_name "
+                + "FROM bids b "
+                + "JOIN users u ON b.bidder_id = u.id "
+                + "WHERE b.product_id = ? "
+                + "ORDER BY b.bid_price DESC LIMIT 1";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, productId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) return rs.getString("full_name");
+
+        } catch (SQLException e) {
+            // Fallback: lay tu gia cao nhat
+            return getWinnerFallback(productId);
+        }
+        return "Chua co nguoi dat gia";
+    }
+
+    private static String getWinnerFallback(int productId) {
+        // Neu bang bids chua co bidder_id, lay bang gia cao nhat
+        String sql = "SELECT MAX(bid_price) as max_price FROM bids "
+                + "WHERE product_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, productId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return "Nguoi dat gia cao nhat: "
+                        + String.format("%,.0f VND",
+                        rs.getDouble("max_price")).replace(",", ".");
+            }
+        } catch (SQLException ignored) { }
+        return "Khong ro";
+    }
+
+    // =========================================
+    // PHAN 4: GIAO TIEP MANG (REAL-TIME)
+    // =========================================
+    public static void startRealtimeListener(DashboardController controller) {
         new Thread(() -> {
             try {
-                java.net.Socket socket = new java.net.Socket("localhost", 8888);
-                java.io.ObjectOutputStream out = new java.io.ObjectOutputStream(socket.getOutputStream());
+                java.net.Socket socket =
+                        new java.net.Socket("localhost", 8888);
+                java.io.ObjectOutputStream out =
+                        new java.io.ObjectOutputStream(socket.getOutputStream());
                 out.flush();
-                java.io.ObjectInputStream in = new java.io.ObjectInputStream(socket.getInputStream());
+                java.io.ObjectInputStream in =
+                        new java.io.ObjectInputStream(socket.getInputStream());
 
-                // Xin gia nhập mạng lưới nhận thông báo
                 out.writeObject("LISTEN");
                 out.flush();
 
                 while (true) {
                     String signal = (String) in.readObject();
-
                     if ("REFRESH_DATA".equals(signal)) {
-                        // 1. Tự động lấy danh sách mới nhất từ MySQL
-                        List<com.auction.model.Product> freshList = loadProducts();
-
-                        // 2. Ép giao diện JavaFX cập nhật lại cái Bảng
-                        javafx.application.Platform.runLater(() -> {
-                            controller.refreshTable(freshList);
-                            System.out.println("[CLIENT] Đã tải lại dữ liệu MySQL theo lệnh của Server!");
-                        });
+                        List<Item> freshList = loadProducts();
+                        javafx.application.Platform.runLater(() ->
+                                controller.refreshTable(freshList));
                     }
                 }
             } catch (Exception e) {
-                System.err.println("[CLIENT] Tạm thời mất kết nối với Server.");
+                System.err.println("[CLIENT] Mat ket noi voi Server.");
             }
-        }).start();
+        }, "RealtimeListener").start();
     }
 
-    /**
-     * Hàm này giống như cái chuông báo.
-     * Cứ thêm/xóa/sửa Database xong là gọi hàm này để báo Server
-     */
     public static void notifyServer() {
         new Thread(() -> {
-            try (java.net.Socket socket = new java.net.Socket("localhost", 8888);
-                 java.io.ObjectOutputStream out = new java.io.ObjectOutputStream(socket.getOutputStream())) {
-
-                // Báo cáo Server: "Có dữ liệu thay đổi!"
+            try (java.net.Socket socket =
+                         new java.net.Socket("localhost", 8888);
+                 java.io.ObjectOutputStream out =
+                         new java.io.ObjectOutputStream(
+                                 socket.getOutputStream())) {
                 out.writeObject("CLIENT_UPDATE");
                 out.flush();
-
             } catch (Exception e) {
-                System.out.println(">> [BỘ ĐÀM] Chưa bật Server nên không phát được thông báo.");
+                System.out.println(">> Server chua bat, bo qua broadcast.");
             }
-        }).start();
+        }, "NotifyServer").start();
     }
 }

@@ -1,6 +1,7 @@
 package com.uet.auction;
 
-import com.auction.model.Product;
+import com.auction.factory.ItemFactory;
+import com.auction.model.Item;
 import com.auction.model.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,12 +28,12 @@ import java.util.ResourceBundle;
 public class DashboardController implements Initializable {
 
     // 1. Khai báo các cột trong bảng
-    @FXML private TableView<Product> productTable;
-    @FXML private TableColumn<Product, String> colName;
-    @FXML private TableColumn<Product, Double> colStartPrice;
-    @FXML private TableColumn<Product, String> colDescription;
-    @FXML private TableColumn<Product, LocalDateTime> colStartTime;
-    @FXML private TableColumn<Product, LocalDateTime> colEndTime;
+    @FXML private TableView<Item> productTable;
+    @FXML private TableColumn<Item, String> colName;
+    @FXML private TableColumn<Item, Double> colStartPrice;
+    @FXML private TableColumn<Item, String> colDescription;
+    @FXML private TableColumn<Item, LocalDateTime> colStartTime;
+    @FXML private TableColumn<Item, LocalDateTime> colEndTime;
 
     // 2. Khai báo các ô nhập liệu của Seller
     @FXML private HBox addProductBox;
@@ -40,6 +41,7 @@ public class DashboardController implements Initializable {
     @FXML private TextField newDescField;
     @FXML private TextField newPriceField;
     @FXML private TextField newDurationField;
+    @FXML private javafx.scene.control.ComboBox<String> categoryComboBox;
 
     @FXML private Label totalProductsLabel;
     @FXML private Label highestPriceLabel;
@@ -62,7 +64,7 @@ public class DashboardController implements Initializable {
             "-fx-background-color: transparent; -fx-cursor: hand; -fx-padding: 11 20;";
 
     // Danh sách quan sát
-    private ObservableList<Product> productList;
+    private ObservableList<Item> productList;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -74,7 +76,7 @@ public class DashboardController implements Initializable {
         colEndTime.setCellValueFactory(new PropertyValueFactory<>("endTime"));
 
         // 2. Làm đẹp cột Giá (Có dấu phẩy phân cách)
-        colStartPrice.setCellFactory(column -> new TableCell<Product, Double>() {
+        colStartPrice.setCellFactory(column -> new TableCell<Item, Double>() {
             @Override
             protected void updateItem(Double price, boolean empty) {
                 super.updateItem(price, empty);
@@ -89,7 +91,7 @@ public class DashboardController implements Initializable {
         // 3. Làm đẹp định dạng Thời gian cho 2 cột StartTime và EndTime
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm");
 
-        colStartTime.setCellFactory(column -> new TableCell<Product, LocalDateTime>() {
+        colStartTime.setCellFactory(column -> new TableCell<Item, LocalDateTime>() {
             @Override
             protected void updateItem(LocalDateTime time, boolean empty) {
                 super.updateItem(time, empty);
@@ -101,7 +103,7 @@ public class DashboardController implements Initializable {
             }
         });
 
-        colEndTime.setCellFactory(column -> new TableCell<Product, LocalDateTime>() {
+        colEndTime.setCellFactory(column -> new TableCell<Item, LocalDateTime>() {
             @Override
             protected void updateItem(LocalDateTime time, boolean empty) {
                 super.updateItem(time, empty);
@@ -128,7 +130,7 @@ public class DashboardController implements Initializable {
                 // Click đúp để mở Pop-up đấu giá HOẶC bảng chi tiết
                 productTable.setOnMouseClicked(event -> {
                     if (event.getClickCount() == 2 && productTable.getSelectionModel().getSelectedItem() != null) {
-                        Product selectedProduct = productTable.getSelectionModel().getSelectedItem();
+                        Item selectedProduct = productTable.getSelectionModel().getSelectedItem();
                         showBidderProductDetail(selectedProduct);
                     }
                 });
@@ -154,7 +156,7 @@ public class DashboardController implements Initializable {
     // HÀM TẢI LẠI TOÀN BỘ DỮ LIỆU CHUẨN
     // ==========================================
     private void loadDataFromDatabase() {
-        List<Product> products = DataManager.loadProducts();
+        List<Item> products = DataManager.loadProducts();
         productList = FXCollections.observableArrayList(products);
         productTable.setItems(productList);
 
@@ -169,38 +171,45 @@ public class DashboardController implements Initializable {
     @FXML
     public void handleAddProduct() {
         try {
-            // Lấy dữ liệu từ các ô
+            // Lay du lieu tu cac o nhap lieu
             String name = newNameField.getText();
             String desc = newDescField.getText();
             double price = Double.parseDouble(newPriceField.getText());
             int durationMinutes = Integer.parseInt(newDurationField.getText());
 
-            // Tạo sản phẩm mới
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime endTime = now.plusMinutes(durationMinutes);
-
-            Product newProduct = new Product(name, desc, price, 0.0, endTime, 0);
-
-            // Gán Người bán từ Session
-            User loggedInUser = SessionManager.getInstance().getCurrentUser();
-            if (loggedInUser != null) {
-                // Fix tạm: Gán ID vào trường SellerName vì class Product chưa có SellerId tương ứng
-                newProduct.setSellerId(loggedInUser.getId());
+            // Lay category tu ComboBox (mac dinh General neu chua chon)
+            String category = categoryComboBox.getValue();
+            if (category == null || category.isEmpty()) {
+                category = "General";
             }
 
-            // 1. Cập nhật lên giao diện (để bảng tự động hiện dòng mới)
+            // Tao san pham dung ItemFactory theo category nguoi ban chon
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime endTime = now.plusMinutes(durationMinutes);
+            Item newProduct = ItemFactory.create(
+                    category, name, desc, price, 0.0, endTime, 0);
+
+            // Gan nguoi ban tu Session
+            User loggedInUser = SessionManager.getInstance().getCurrentUser();
+            if (loggedInUser != null) {
+                newProduct.setSellerId(loggedInUser.getId());
+                newProduct.setSellerName(loggedInUser.getFullName());
+            }
+
+            // 1. Cap nhat len giao dien
             productList.add(newProduct);
 
-            // 2. Bắn thẳng sản phẩm vừa tạo vào Database
+            // 2. Luu vao Database
             DataManager.saveProduct(newProduct);
 
-            // 3. Xóa trắng ô nhập liệu
+            // 3. Xoa trang o nhap lieu
             newNameField.clear();
             newDescField.clear();
             newPriceField.clear();
             newDurationField.clear();
+            categoryComboBox.setValue(null);
 
-            // 4. Update lại bảng thông số
+            // 4. Update lai bang thong so
             updateDashboardStats();
 
         } catch (NumberFormatException e) {
@@ -216,7 +225,7 @@ public class DashboardController implements Initializable {
     @FXML
     public void handleDeleteProduct() {
         // 1. Lấy ra sản phẩm mà người dùng đang click chọn trên bảng
-        Product selectedProduct = productTable.getSelectionModel().getSelectedItem();
+        Item selectedProduct = productTable.getSelectionModel().getSelectedItem();
 
         if (selectedProduct != null) {
             User loggedInUser = SessionManager.getInstance().getCurrentUser();
@@ -250,7 +259,7 @@ public class DashboardController implements Initializable {
     // ==========================================
     // CÁC HÀM CHUNG KHÁC
     // ==========================================
-    private void openBidWindow(Product product) {
+    private void openBidWindow(Item product) {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("bid-view.fxml"));
             javafx.scene.Parent root = loader.load();
@@ -290,10 +299,10 @@ public class DashboardController implements Initializable {
             totalProductsLabel.setText(String.valueOf(productList.size()));
 
             // 2. Tìm giá cao nhất và nhiều lượt bid nhất
-            Product highestPriceProduct = productList.get(0);
-            Product mostBidsProduct = productList.get(0);
+            Item highestPriceProduct = productList.get(0);
+            Item mostBidsProduct = productList.get(0);
 
-            for (Product p : productList) {
+            for (Item p : productList) {
                 // So sánh để tìm Giá cao nhất
                 if (p.getCurrentPrice() > highestPriceProduct.getCurrentPrice()) {
                     highestPriceProduct = p;
@@ -315,7 +324,7 @@ public class DashboardController implements Initializable {
         });
     }
 
-    public void refreshTable(List<Product> newList) {
+    public void refreshTable(List<Item> newList) {
         Platform.runLater(() -> {
             if (productList == null) {
                 productList = FXCollections.observableArrayList();
@@ -461,7 +470,7 @@ public class DashboardController implements Initializable {
     // ==========================================
     // HÀM HIỂN THỊ CHI TIẾT SẢN PHẨM (Bidder)
     // ==========================================
-    private void showBidderProductDetail(Product product) {
+    private void showBidderProductDetail(Item product) {
         Alert alert = new Alert(Alert.AlertType.NONE);
         alert.setTitle("Thông tin sản phẩm");
         alert.setHeaderText(null); // Tắt header mặc định để tự vẽ
@@ -641,7 +650,7 @@ public class DashboardController implements Initializable {
     // ==========================================
     // HÀM VẼ BIỂU ĐỒ TỪ DATABASE BIDS
     // ==========================================
-    private void showPriceHistoryChart(Product product) {
+    private void showPriceHistoryChart(Item product) {
         Stage stage = new Stage();
         stage.setTitle("Lịch sử giá: " + product.getName());
 

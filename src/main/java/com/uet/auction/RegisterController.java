@@ -1,5 +1,6 @@
 package com.uet.auction;
 
+import com.auction.factory.UserFactory;
 import com.auction.model.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -133,8 +134,8 @@ public class RegisterController {
         }
         // =========================================================
 
-        // 7. VƯỢT QUA KIỂM TRA -> TẠO USER MỚI
-        User newUser = new User(username, password, email, fullName, role);
+        // 7. VUOT QUA KIEM TRA -> Dung UserFactory tao dung subclass
+        User newUser = UserFactory.create(username, password, email, fullName, role);
 
         System.out.println("Đăng ký tài khoản: " + newUser.getUsername());
         System.out.println("Họ tên: " + newUser.getFullName());
