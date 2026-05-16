@@ -189,6 +189,9 @@
                     <TextField fx:id="newDurationField"
                                prefHeight="42.0" prefWidth="110.0"
                                promptText="TG (Phút)" styleClass="form-input" />
+                    <ComboBox fx:id="categoryComboBox"
+                              prefHeight="42.0" prefWidth="130.0"
+                              promptText="Loai SP" />
 
                     <Region HBox.hgrow="ALWAYS" />
 

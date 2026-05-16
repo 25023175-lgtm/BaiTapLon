@@ -149,7 +149,13 @@ public class DashboardController implements Initializable {
         loadDataFromDatabase();
 
         // 6. Bật bộ đàm Realtime nghe dữ liệu từ Server (Đã bật lại)
-        // DataManager.startRealtimeListener(this);
+        DataManager.startRealtimeListener(this);
+
+        // Them vao cuoi ham initialize()
+        categoryComboBox.getItems().addAll(
+                "General", "Electronics", "Art", "Vehicle"
+        );
+        categoryComboBox.setValue("General"); // Mac dinh chon General
     }
 
     // ==========================================
@@ -207,7 +213,7 @@ public class DashboardController implements Initializable {
             newDescField.clear();
             newPriceField.clear();
             newDurationField.clear();
-            categoryComboBox.setValue(null);
+            categoryComboBox.setValue("General");
 
             // 4. Update lai bang thong so
             updateDashboardStats();
@@ -230,20 +236,57 @@ public class DashboardController implements Initializable {
         if (selectedProduct != null) {
             User loggedInUser = SessionManager.getInstance().getCurrentUser();
 
-            // 3. KIỂM TRA QUYỀN SỞ HỮU
-            // Tạm thời bỏ qua kiểm tra Name, nên lấy ID để check quyền
-            if (loggedInUser != null) {
-                // Trùng tên -> Đúng là chính chủ -> Cho phép xóa
+            // 3. KIEM TRA QUYEN SO HUU - dung ID de check chinh xac
+            boolean isOwner = loggedInUser != null
+                    && (loggedInUser.getId() == selectedProduct.getSellerId()
+                    || "Admin".equals(loggedInUser.getRole()));
+
+            if (isOwner) {
+                // Chinh chu hoac Admin -> Cho phep xoa
                 productList.remove(selectedProduct);
                 DataManager.deleteProduct(selectedProduct);
-                updateDashboardStats(); // Cập nhật lại số liệu
+                updateDashboardStats();
 
             } else {
-                // Không trùng tên -> Cảnh báo ngay lập tức
-                Alert alert = new Alert(Alert.AlertType.ERROR);
+                // Khong phai chinh chu -> Tu choi
+                Alert alert = new Alert(Alert.AlertType.NONE);
                 alert.setTitle("Lỗi phân quyền");
-                alert.setHeaderText("Hành động bị từ chối!");
-                alert.setContentText("Bạn không thể xóa sản phẩm của người khác.\nBạn chỉ có quyền xóa những mặt hàng do chính bạn đăng bán.");
+                alert.setHeaderText(null);
+
+                javafx.scene.layout.VBox header = new javafx.scene.layout.VBox(8);
+                header.setStyle("-fx-background-color: #DC2626; -fx-padding: 22 24 18 24; -fx-alignment: CENTER;");
+                javafx.scene.control.Label icon = new javafx.scene.control.Label("🚫");
+                icon.setStyle("-fx-font-size: 30px;");
+                javafx.scene.control.Label titleLbl = new javafx.scene.control.Label("Hành động bị từ chối!");
+                titleLbl.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;");
+                header.getChildren().addAll(icon, titleLbl);
+
+                javafx.scene.layout.VBox body = new javafx.scene.layout.VBox(0);
+                body.setStyle("-fx-background-color: white; -fx-padding: 18 24 12 24; -fx-alignment: CENTER;");
+                javafx.scene.control.Label msg = new javafx.scene.control.Label(
+                        "Bạn không thể xóa sản phẩm của người khác.\nChỉ chủ sở hữu hoặc Admin mới có quyền xóa.");
+                msg.setStyle("-fx-font-size: 13.5px; -fx-text-fill: #374151; -fx-wrap-text: true; -fx-text-alignment: center;");
+                msg.setWrapText(true);
+                body.getChildren().add(msg);
+
+                javafx.scene.layout.VBox root = new javafx.scene.layout.VBox(0);
+                root.setStyle("-fx-background-color: white;");
+                root.setPrefWidth(340);
+                root.getChildren().addAll(header, body);
+
+                alert.getDialogPane().setContent(root);
+                alert.getDialogPane().setStyle("-fx-background-color: white; -fx-padding: 0;");
+
+                javafx.scene.control.ButtonType btnOk = new javafx.scene.control.ButtonType(
+                        "Đã hiểu", javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
+                alert.getButtonTypes().setAll(btnOk);
+                alert.setOnShown(ev -> {
+                    javafx.scene.Node btn = alert.getDialogPane().lookupButton(btnOk);
+                    if (btn != null) btn.setStyle(
+                            "-fx-background-color: #DC2626; -fx-text-fill: white;" +
+                                    "-fx-font-size: 13px; -fx-font-weight: bold;" +
+                                    "-fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 9 24;");
+                });
                 alert.showAndWait();
             }
 
