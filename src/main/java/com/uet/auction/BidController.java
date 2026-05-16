@@ -36,29 +36,40 @@ public class BidController {
         try {
             double bidAmount = Double.parseDouble(bidAmountField.getText());
 
-            // --- KIỂM TRA LUẬT ĐẤU GIÁ ---
-            if (currentProduct.getStatus() != null && !currentProduct.getStatus().equals("ACTIVE")) {
-                throw new AuctionClosedException("Món đồ này đã chốt đơn, không thể ra giá thêm!");
-            }
+            // --- SYNCHRONIZED: Khoa doi tuong de tranh race condition ---
+            // Khi 2 client dat gia cung luc, chi 1 thread duoc vao khoi nay
+            synchronized (currentProduct) {
 
-            if (bidAmount <= currentProduct.getCurrentPrice()) {
-                throw new InvalidBidException("Số tiền đấu giá phải cao hơn giá hiện tại!");
-            }
+                // --- KIỂM TRA LUẬT ĐẤU GIÁ ---
+                if (currentProduct.getStatus() != null
+                        && !currentProduct.getStatus().equals("ACTIVE")) {
+                    throw new AuctionClosedException(
+                            "Món đồ này đã chốt đơn, không thể ra giá thêm!");
+                }
 
-            // --- THỰC HIỆN CẬP NHẬT DỮ LIỆU ---
-            currentProduct.setCurrentPrice(bidAmount);
-            currentProduct.setBidCount(currentProduct.getBidCount() + 1);
+                if (bidAmount <= currentProduct.getCurrentPrice()) {
+                    throw new InvalidBidException(
+                            "Số tiền đấu giá phải cao hơn giá hiện tại!");
+                }
 
-            // LOGIC ANTI-SNIPING
-            LocalDateTime now = LocalDateTime.now();
-            Duration timeLeft = Duration.between(now, currentProduct.getEndTime());
-            if (timeLeft.getSeconds() <= 60 && timeLeft.getSeconds() > 0) {
-                currentProduct.setEndTime(currentProduct.getEndTime().plusMinutes(5));
-                System.out.println(">> [ANTI-SNIPING] Đã gia hạn 5 phút cho: " + currentProduct.getName());
-            }
+                // --- THỰC HIỆN CẬP NHẬT DỮ LIỆU ---
+                currentProduct.setCurrentPrice(bidAmount);
+                currentProduct.setBidCount(currentProduct.getBidCount() + 1);
 
-            DataManager.updateProduct(currentProduct);
-            DataManager.saveBid(currentProduct.getId(), bidAmount);
+                // LOGIC ANTI-SNIPING
+                LocalDateTime now = LocalDateTime.now();
+                Duration timeLeft = Duration.between(now, currentProduct.getEndTime());
+                if (timeLeft.getSeconds() <= 60 && timeLeft.getSeconds() > 0) {
+                    currentProduct.setEndTime(
+                            currentProduct.getEndTime().plusMinutes(5));
+                    System.out.println("[ANTI-SNIPING] Đã gia hạn 5 phút cho: "
+                            + currentProduct.getName());
+                }
+
+                DataManager.updateProduct(currentProduct);
+                DataManager.saveBid(currentProduct.getId(), bidAmount);
+
+            } // --- KET THUC SYNCHRONIZED BLOCK ---
 
             // ── Thông báo thành công (styled) ─────────────────────────
             showSuccess(currentProduct.getName(), bidAmount);

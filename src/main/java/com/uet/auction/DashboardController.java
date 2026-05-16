@@ -72,7 +72,7 @@ public class DashboardController implements Initializable {
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colStartPrice.setCellValueFactory(new PropertyValueFactory<>("startPrice"));
         colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
-        colStartTime.setCellValueFactory(new PropertyValueFactory<>("endTime")); // FIX TẠM: Gán StartTime bằng EndTime do DB chưa có
+        colStartTime.setCellValueFactory(new PropertyValueFactory<>("startTime")); // Da fix: dung startTime chinh xac
         colEndTime.setCellValueFactory(new PropertyValueFactory<>("endTime"));
 
         // 2. Làm đẹp cột Giá (Có dấu phẩy phân cách)
