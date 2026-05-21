@@ -1,6 +1,7 @@
 package com.uet.auction;
 
 import com.auction.model.Item;
+import com.auction.model.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -35,6 +36,14 @@ public class BidController {
     void handlePlaceBid(ActionEvent event) {
         try {
             double bidAmount = Double.parseDouble(bidAmountField.getText());
+
+            // --- KIỂM TRA: Không được tự đấu giá sản phẩm của chính mình ---
+            User currentUser = SessionManager.getInstance().getCurrentUser();
+            if (currentUser != null
+                    && currentUser.getId() == currentProduct.getSellerId()) {
+                throw new InvalidBidException(
+                        "Bạn không thể đấu giá sản phẩm\ndo chính mình đăng bán!");
+            }
 
             // --- SYNCHRONIZED: Khoa doi tuong de tranh race condition ---
             // Khi 2 client dat gia cung luc, chi 1 thread duoc vao khoi nay
@@ -94,7 +103,6 @@ public class BidController {
         alert.setTitle("Đặt giá thành công");
         alert.setHeaderText(null);
 
-        // Header xanh lá
         javafx.scene.layout.VBox header = new javafx.scene.layout.VBox(6);
         header.setStyle(
                 "-fx-background-color: #2D6A4F;" +
@@ -109,33 +117,26 @@ public class BidController {
         );
         header.getChildren().addAll(icon, title);
 
-        // Body trắng
         javafx.scene.layout.VBox body = new javafx.scene.layout.VBox(10);
         body.setStyle(
                 "-fx-background-color: white;" +
                         "-fx-padding: 20 24 16 24;" +
                         "-fx-alignment: CENTER;"
         );
-
         javafx.scene.control.Label prodLabel = new javafx.scene.control.Label(
-                "Sản phẩm: " + productName
-        );
+                "Sản phẩm: " + productName);
         prodLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #6B7280;");
 
         String fmtAmount = String.format("%,.0f VND", amount).replace(",", ".");
         javafx.scene.control.Label amountLabel = new javafx.scene.control.Label(fmtAmount);
         amountLabel.setStyle(
-                "-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1A2E22;"
-        );
+                "-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1A2E22;");
 
         javafx.scene.control.Label subLabel = new javafx.scene.control.Label(
-                "là mức giá cao nhất hiện tại 🎉"
-        );
+                "là mức giá cao nhất hiện tại 🎉");
         subLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #6B7280;");
-
         body.getChildren().addAll(prodLabel, amountLabel, subLabel);
 
-        // Assemble
         javafx.scene.layout.VBox root = new javafx.scene.layout.VBox(0);
         root.setStyle("-fx-background-color: white;");
         root.setPrefWidth(360);
@@ -144,18 +145,16 @@ public class BidController {
         alert.getDialogPane().setContent(root);
         alert.getDialogPane().setStyle("-fx-background-color: white; -fx-padding: 0;");
 
-        ButtonType btnOk = new ButtonType("Tuyệt vời!", javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
+        ButtonType btnOk = new ButtonType("Tuyệt vời!",
+                javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
         alert.getButtonTypes().setAll(btnOk);
-
         alert.setOnShown(ev -> {
             javafx.scene.Node btn = alert.getDialogPane().lookupButton(btnOk);
             if (btn != null) btn.setStyle(
                     "-fx-background-color: #2D6A4F; -fx-text-fill: white;" +
                             "-fx-font-size: 13px; -fx-font-weight: bold;" +
-                            "-fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 9 28;"
-            );
+                            "-fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 9 28;");
         });
-
         alert.showAndWait();
     }
 
@@ -165,7 +164,6 @@ public class BidController {
         alert.setTitle(title);
         alert.setHeaderText(null);
 
-        // Header đỏ
         javafx.scene.layout.VBox header = new javafx.scene.layout.VBox(6);
         header.setStyle(
                 "-fx-background-color: #DC2626;" +
@@ -176,11 +174,9 @@ public class BidController {
         icon.setStyle("-fx-font-size: 26px;");
         javafx.scene.control.Label titleLabel = new javafx.scene.control.Label(title);
         titleLabel.setStyle(
-                "-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;"
-        );
+                "-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;");
         header.getChildren().addAll(icon, titleLabel);
 
-        // Body trắng
         javafx.scene.layout.VBox body = new javafx.scene.layout.VBox(0);
         body.setStyle(
                 "-fx-background-color: white;" +
@@ -200,18 +196,16 @@ public class BidController {
         alert.getDialogPane().setContent(root);
         alert.getDialogPane().setStyle("-fx-background-color: white; -fx-padding: 0;");
 
-        ButtonType btnOk = new ButtonType("Đã hiểu", javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
+        ButtonType btnOk = new ButtonType("Đã hiểu",
+                javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
         alert.getButtonTypes().setAll(btnOk);
-
         alert.setOnShown(ev -> {
             javafx.scene.Node btn = alert.getDialogPane().lookupButton(btnOk);
             if (btn != null) btn.setStyle(
                     "-fx-background-color: #DC2626; -fx-text-fill: white;" +
                             "-fx-font-size: 13px; -fx-font-weight: bold;" +
-                            "-fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 9 24;"
-            );
+                            "-fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 9 24;");
         });
-
         alert.showAndWait();
     }
 }
