@@ -1,188 +1,289 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+# 🏆 Hệ thống Đấu giá UET — AuctionSystem_UET
 
-    <groupId>com.uet</groupId>
-    <artifactId>auction</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <name>AuctionSystem_UET</name>
+> Bài tập lớn môn **Lập trình nâng cao** — Học kỳ II, 2025–2026  
+> Trường Đại học Công nghệ — ĐHQGHN (UET)
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <junit.version>5.12.1</junit.version>
-    </properties>
+---
 
-    <dependencies>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>21.0.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>21.0.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.controlsfx</groupId>
-            <artifactId>controlsfx</artifactId>
-            <version>11.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>net.synedra</groupId>
-            <artifactId>validatorfx</artifactId>
-            <version>0.6.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.github.mkpaz</groupId>
-            <artifactId>atlantafx-base</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
-            <version>8.3.0</version>
-        </dependency>
-    </dependencies>
+## 1. Mô tả bài toán
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
-                <configuration>
-                    <source>21</source>
-                    <target>21</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.8</version>
-                <executions>
-                    <execution>
-                        <id>default-cli</id>
-                        <configuration>
-                            <mainClass>com.uet.auction/com.uet.auction.MainApplication</mainClass>
-                            <launcher>app</launcher>
-                            <jlinkZipName>app</jlinkZipName>
-                            <jlinkImageName>app</jlinkImageName>
-                            <noManPages>true</noManPages>
-                            <stripDebug>true</stripDebug>
-                            <noHeaderFiles>true</noHeaderFiles>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.3.1</version>
-                <configuration>
-                    <configLocation>google_checks.xml</configLocation>
-                    <consoleOutput>true</consoleOutput>
-                    <failsOnError>true</failsOnError>
-                    <linkXRef>false</linkXRef>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>validate</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.5.2</version>
-                <executions>
+Hệ thống Đấu giá Trực tuyến cho phép người dùng đăng ký tài khoản theo vai trò **Bidder** (người mua) hoặc **Seller** (người bán), sau đó tham gia vào các phiên đấu giá theo thời gian thực.
 
-                    <!-- ══ JAR 1: client.jar ══════════════════════════════ -->
-                    <execution>
-                        <id>build-client-jar</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Ten file output: target/client.jar -->
-                            <outputFile>${project.build.directory}/client.jar</outputFile>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <!-- Main class cua Client la Launcher (khong phai MainApplication) -->
-                                    <mainClass>com.uet.auction.Launcher</mainClass>
-                                </transformer>
-                            </transformers>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>module-info.class</exclude>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                        </configuration>
-                    </execution>
+**Phạm vi hệ thống:**
+- Người bán đăng sản phẩm lên hệ thống với giá khởi điểm và thời gian kết thúc
+- Người mua đặt giá cạnh tranh, hệ thống tự động kiểm tra tính hợp lệ
+- Khi phiên kết thúc, hệ thống xác định người thắng cuộc
+- Giao diện cập nhật realtime khi có thay đổi từ bất kỳ client nào
+- Admin quản trị toàn bộ hệ thống qua tài khoản đặc biệt
 
-                    <!-- ══ JAR 2: server.jar ══════════════════════════════ -->
-                    <execution>
-                        <id>build-server-jar</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Ten file output: target/server.jar -->
-                            <outputFile>${project.build.directory}/server.jar</outputFile>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <!-- Main class cua Server la AuctionServer -->
-                                    <mainClass>com.uet.auction.AuctionServer</mainClass>
-                                </transformer>
-                            </transformers>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>module-info.class</exclude>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                        </configuration>
-                    </execution>
+---
 
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-</project>
+## 2. Công nghệ sử dụng
+
+| Thành phần | Công nghệ |
+|---|---|
+| Ngôn ngữ | Java 21 |
+| Giao diện (GUI) | JavaFX 21 + FXML + SceneBuilder |
+| Theme UI | AtlantaFX |
+| Cơ sở dữ liệu | MySQL (qua XAMPP) |
+| Kết nối DB | JDBC |
+| Lập trình mạng | Java Socket (TCP) |
+| Build tool | Apache Maven |
+| Kiểm thử | JUnit 5 |
+| CI/CD | GitHub Actions |
+| Coding convention | Checkstyle (Google Style) |
+
+---
+
+## 3. Yêu cầu cài đặt
+
+- **Java 21** (JDK 21 trở lên)
+- **Maven 3.8+**
+- **XAMPP** (MySQL + Apache) — hoặc MySQL Server độc lập
+- **IntelliJ IDEA** (khuyên dùng) hoặc Eclipse
+
+---
+
+## 4. Cấu trúc thư mục
+
+```
+BaiTapLon/
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   ├── com/auction/
+│   │   │   │   ├── common/          # Custom Exceptions
+│   │   │   │   │   ├── AuctionClosedException.java
+│   │   │   │   │   ├── InvalidBidException.java
+│   │   │   │   │   └── AuthenticationException.java
+│   │   │   │   ├── factory/         # Factory Pattern
+│   │   │   │   │   ├── UserFactory.java
+│   │   │   │   │   └── ItemFactory.java
+│   │   │   │   ├── model/           # OOP Model Classes
+│   │   │   │   │   ├── User.java          (abstract)
+│   │   │   │   │   ├── Bidder.java
+│   │   │   │   │   ├── Seller.java
+│   │   │   │   │   ├── Admin.java
+│   │   │   │   │   ├── Item.java          (abstract)
+│   │   │   │   │   ├── Product.java
+│   │   │   │   │   ├── Electronics.java
+│   │   │   │   │   ├── Art.java
+│   │   │   │   │   ├── Vehicle.java
+│   │   │   │   │   └── Bid.java
+│   │   │   │   └── observer/        # Observer Pattern
+│   │   │   │       ├── AuctionObserver.java
+│   │   │   │       ├── AuctionSubject.java
+│   │   │   │       └── AuctionManager.java
+│   │   │   ├── com/uet/auction/     # Controllers & Server
+│   │   │   │   ├── AuctionServer.java
+│   │   │   │   ├── ClientHandler.java
+│   │   │   │   ├── DashboardController.java
+│   │   │   │   ├── BidController.java
+│   │   │   │   ├── LoginController.java
+│   │   │   │   ├── RegisterController.java
+│   │   │   │   ├── DataManager.java
+│   │   │   │   ├── DatabaseConnection.java
+│   │   │   │   ├── SessionManager.java
+│   │   │   │   └── SceneManager.java
+│   │   │   └── module-info.java
+│   │   └── resources/com/uet/auction/
+│   │       ├── dashboard-view.fxml
+│   │       ├── login-view.fxml
+│   │       ├── register-view.fxml
+│   │       ├── bid-view.fxml
+│   │       └── styles.css
+│   └── test/                        # Unit Tests (JUnit 5)
+├── target/
+│   ├── server.jar                   # File JAR máy chủ
+│   └── client.jar                   # File JAR giao diện người dùng
+├── .github/workflows/ci.yml         # CI/CD GitHub Actions
+├── pom.xml
+└── README.md
+```
+
+---
+
+## 5. Vị trí các file .jar
+
+Sau khi build bằng lệnh `mvn clean package -DskipTests`, hai file JAR sẽ được tạo ra trong thư mục `target/`:
+
+| File | Đường dẫn | Mô tả |
+|---|---|---|
+| `server.jar` | `target/server.jar` | Chạy máy chủ đấu giá (AuctionServer) |
+| `client.jar` | `target/client.jar` | Chạy giao diện người dùng (JavaFX) |
+
+---
+
+## 6. Thiết lập Database
+
+M�� **phpMyAdmin** (hoặc MySQL Workbench) và chạy lần lượt các câu SQL sau:
+
+```sql
+-- 1. Tạo database
+CREATE DATABASE IF NOT EXISTS auction_db
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+USE auction_db;
+
+-- 2. Bảng người dùng
+CREATE TABLE IF NOT EXISTS users (
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    username    VARCHAR(50)  NOT NULL UNIQUE,
+    password    VARCHAR(100) NOT NULL,
+    email       VARCHAR(100) NOT NULL,
+    full_name   VARCHAR(100) NOT NULL,
+    role        VARCHAR(20)  NOT NULL DEFAULT 'Bidder',
+    balance     DOUBLE       NOT NULL DEFAULT 0.0
+);
+
+-- 3. Bảng sản phẩm
+CREATE TABLE IF NOT EXISTS products (
+    id              INT AUTO_INCREMENT PRIMARY KEY,
+    name            VARCHAR(200) NOT NULL,
+    description     TEXT,
+    start_price     DOUBLE  NOT NULL,
+    current_price   DOUBLE  NOT NULL,
+    buy_now_price   DOUBLE  DEFAULT 0,
+    seller_username VARCHAR(50),
+    start_time      DATETIME DEFAULT CURRENT_TIMESTAMP,
+    end_time        DATETIME NOT NULL,
+    status          VARCHAR(20) DEFAULT 'ACTIVE',
+    bid_count       INT DEFAULT 0
+);
+
+-- 4. Bảng lịch sử đặt giá
+CREATE TABLE IF NOT EXISTS bids (
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    product_id  INT    NOT NULL,
+    bid_price   DOUBLE NOT NULL,
+    bid_time    DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+-- 5. Tạo tài khoản Admin mặc định
+INSERT INTO users (username, password, email, full_name, role, balance)
+VALUES ('admin', '123456', 'admin@uet.vn', 'Admin UET', 'Admin', 0);
+```
+
+---
+
+## 7. Cấu hình kết nối Database
+
+M�� file `src/main/java/com/uet/auction/DatabaseConnection.java` và chỉnh thông tin nếu cần:
+
+```java
+private static final String URL      = "jdbc:mysql://localhost:3306/auction_db";
+private static final String USER     = "root";   // username MySQL của bạn
+private static final String PASSWORD = "";        // password MySQL (XAMPP mặc định để trống)
+```
+
+---
+
+## 8. Hướng dẫn chạy Server/Client
+
+### Bước 1 — Build dự án
+
+```bash
+mvn clean package -DskipTests
+```
+
+Sau khi build xong, kiểm tra thư mục `target/` có 2 file: `server.jar` và `client.jar`.
+
+---
+
+### Bước 2 — Chạy Server (bắt buộc chạy TRƯỚC)
+
+M�� một terminal và chạy:
+
+```bash
+java -jar target/server.jar
+```
+
+Chờ đến khi thấy thông báo:
+```
+[SERVER] Máy chủ đang mở cửa tại Cổng 8888.
+[SERVER] Đang lắng nghe và chờ Client kết nối tới...
+```
+
+> ⚠️ **Giữ nguyên terminal này**, không đóng trong suốt quá trình chạy.
+
+---
+
+### Bước 3 — Chạy Client (mở nhiều cửa sổ để test realtime)
+
+M�� terminal **mới** và chạy:
+
+```bash
+java -jar target/client.jar
+```
+
+Để giả lập nhiều người dùng cùng lúc, mở thêm terminal khác và chạy lại lệnh trên:
+
+```bash
+# Terminal 2 — người dùng thứ 2
+java -jar target/client.jar
+
+# Terminal 3 — người dùng thứ 3
+java -jar target/client.jar
+```
+
+> ✅ Mỗi lần chạy `client.jar` sẽ mở một cửa sổ giao diện độc lập.
+
+---
+
+### Tài khoản mặc định
+
+| Vai trò | Username | Password |
+|---|---|---|
+| Admin | `admin` | `123456` |
+| Bidder / Seller | Tự đăng ký qua giao diện | — |
+
+---
+
+## 9. Danh sách chức năng đã hoàn thành
+
+### Chức năng bắt buộc
+- [x] Đăng ký / Đăng nhập theo vai trò (Bidder / Seller / Admin)
+- [x] Phân quyền: Bidder chỉ đấu giá, Seller đăng sản phẩm
+- [x] Thêm / Xoá sản phẩm — Seller chỉ xoá được sản phẩm của mình
+- [x] Ngăn Seller tự đấu giá sản phẩm của chính mình
+- [x] Đặt giá với kiểm tra hợp lệ (phải cao hơn giá hiện tại)
+- [x] Tự động đóng phiên khi hết thời gian
+- [x] Xác định người thắng cuộc
+- [x] Cập nhật realtime cho tất cả client đang mở
+- [x] Xử lý lỗi & ngoại lệ: `AuctionClosedException`, `InvalidBidException`, `AuthenticationException`
+- [x] Xử lý đấu giá đồng thời với `synchronized`
+- [x] Kiến trúc Client–Server qua Java Socket (cổng 8888)
+- [x] Giao diện JavaFX với FXML, áp dụng mô hình MVC
+- [x] Thiết kế OOP: Abstract class, Inheritance, Polymorphism, Interface
+- [x] Design Patterns: Singleton, Factory Method, Observer
+- [x] Maven build + Checkstyle (Google Style)
+- [x] Unit Test JUnit 5 (13 lớp kiểm thử)
+- [x] CI/CD GitHub Actions (build + test + checkstyle tự động)
+
+### Chức năng nâng cao (điểm bonus)
+- [x] **Chống Sniping** — Tự động gia hạn 5 phút khi có lượt đặt giá trong 60 giây cuối
+- [x] **Biểu đồ lịch sử giá** — Biểu đồ vùng (AreaChart) hiển thị lịch sử giá theo thời gian
+- [ ] Đấu giá tự động (Auto-Bidding) — chưa triển khai
+
+---
+
+## 10. Design Patterns áp dụng
+
+| Pattern | Class | Mô tả |
+|---|---|---|
+| **Singleton** | `SessionManager`, `AuctionManager` | Đảm bảo chỉ có 1 instance duy nhất trong toàn hệ thống |
+| **Factory Method** | `UserFactory`, `ItemFactory` | Tạo đúng lớp con theo vai trò hoặc danh mục sản phẩm |
+| **Observer** | `AuctionObserver`, `AuctionManager`, `DashboardController` | Tự động thông báo khi phiên đấu giá thay đổi |
+
+---
+
+## 11. Thành viên nhóm
+
+| Họ tên | MSSV | Vai trò |
+|---|---|---|
+| *(Điền thông tin nhóm)* | | |
+
+---
+
+> 📎 *Link báo cáo PDF và video demo sẽ được bổ sung sau.*
