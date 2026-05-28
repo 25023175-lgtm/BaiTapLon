@@ -315,6 +315,26 @@ public class DataManager {
         }, "RealtimeListener").start();
     }
 
+
+    /**
+     * Cap nhat so du tai khoan nguoi dung vao DB.
+     */
+    public static void updateBalance(int userId, double newBalance) {
+        String sql = "UPDATE users SET balance = ? WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setDouble(1, newBalance);
+            pstmt.setInt(2, userId);
+            pstmt.executeUpdate();
+            System.out.println(">> Da cap nhat so du User id=" + userId
+                    + " -> " + newBalance);
+
+        } catch (SQLException e) {
+            System.out.println(">> Loi cap nhat so du: " + e.getMessage());
+        }
+    }
+
     public static void notifyServer() {
         new Thread(() -> {
             try (java.net.Socket socket =

@@ -174,35 +174,54 @@
                 </TableView>
 
                 <!-- ── ADD PRODUCT FORM (Seller only) ── -->
-                <HBox fx:id="addProductBox" alignment="CENTER_LEFT"
-                      spacing="10.0" styleClass="add-product-card">
+                <VBox fx:id="addProductBox" spacing="8.0" styleClass="add-product-card">
 
-                    <TextField fx:id="newNameField"
-                               prefHeight="42.0" prefWidth="150.0"
-                               promptText="Tên SP..." styleClass="form-input" />
-                    <TextField fx:id="newDescField"
-                               prefHeight="42.0" prefWidth="170.0"
-                               promptText="Mô tả..." styleClass="form-input" />
-                    <TextField fx:id="newPriceField"
-                               prefHeight="42.0" prefWidth="110.0"
-                               promptText="Giá VND" styleClass="form-input" />
-                    <TextField fx:id="newDurationField"
-                               prefHeight="42.0" prefWidth="110.0"
-                               promptText="TG (Phút)" styleClass="form-input" />
-                    <ComboBox fx:id="categoryComboBox"
-                              prefHeight="42.0" prefWidth="130.0"
-                              promptText="Loai SP" />
+                    <!-- Hang 1: Cac o nhap lieu + nut them/xoa -->
+                    <HBox alignment="CENTER_LEFT" spacing="8.0">
+                        <TextField fx:id="newNameField"
+                                   prefHeight="38.0"
+                                   promptText="Tên sản phẩm"
+                                   styleClass="form-input"
+                                   HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="newDescField"
+                                   prefHeight="38.0"
+                                   promptText="Mô tả"
+                                   styleClass="form-input"
+                                   HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="newPriceField"
+                                   prefHeight="38.0" prefWidth="110.0"
+                                   promptText="Giá (VNĐ)" styleClass="form-input" />
+                        <TextField fx:id="newDurationField"
+                                   prefHeight="38.0" prefWidth="100.0"
+                                   promptText="Phút" styleClass="form-input" />
+                        <ComboBox fx:id="categoryComboBox"
+                                  prefHeight="38.0" prefWidth="120.0"
+                                  promptText="Loại SP" />
+                        <Button mnemonicParsing="false" onAction="#handleAddProduct"
+                                prefHeight="38.0" prefWidth="110.0"
+                                styleClass="btn-add" text="+ Thêm SP" />
+                        <Button mnemonicParsing="false" onAction="#handleDeleteProduct"
+                                prefHeight="38.0" prefWidth="70.0"
+                                styleClass="btn-delete" text="Xóa" />
+                    </HBox>
 
-                    <Region HBox.hgrow="ALWAYS" />
+                    <!-- Hang 2: So du va nut nap tien -->
+                    <HBox fx:id="depositBox" alignment="CENTER_LEFT" spacing="12.0">
+                        <Label text="Số dư tài khoản:"
+                               style="-fx-font-size: 13px; -fx-text-fill: #6B7280;" />
+                        <Label fx:id="balanceLabel"
+                               text="0 VNĐ"
+                               style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2D6A4F;" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button mnemonicParsing="false" onAction="#handleDeposit"
+                                prefHeight="34.0" prefWidth="120.0"
+                                text="💰 Nạp tiền"
+                                style="-fx-background-color: #1A2E22; -fx-text-fill: white;
+                                       -fx-font-weight: bold; -fx-font-size: 12px;
+                                       -fx-background-radius: 8; -fx-cursor: hand;" />
+                    </HBox>
 
-                    <Button mnemonicParsing="false" onAction="#handleAddProduct"
-                            prefHeight="42.0" prefWidth="130.0"
-                            styleClass="btn-add" text="+ Thêm SP" />
-                    <Button mnemonicParsing="false" onAction="#handleDeleteProduct"
-                            prefHeight="42.0" prefWidth="80.0"
-                            styleClass="btn-delete" text="Xóa" />
-
-                </HBox>
+                </VBox>
 
             </VBox>
         </VBox>

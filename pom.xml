@@ -82,7 +82,6 @@
                 <version>0.0.8</version>
                 <executions>
                     <execution>
-                        <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>com.uet.auction/com.uet.auction.MainApplication</mainClass>
@@ -101,17 +100,14 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>3.3.1</version>
                 <configuration>
-                    <!-- Sử dụng bộ quy tắc chuẩn của Google (Rất khắt khe về đặt tên và format) -->
                     <configLocation>google_checks.xml</configLocation>
                     <consoleOutput>true</consoleOutput>
-                    <!-- QUAN TRỌNG NHẤT: Bật thành true để ép lỗi. Nếu code sai quy tắc -> Build thất bại! -->
                     <failsOnError>true</failsOnError>
                     <linkXRef>false</linkXRef>
                 </configuration>
                 <executions>
                     <execution>
                         <id>validate</id>
-                        <!-- Cho nó chạy ngay ở pha đầu tiên, sai quy tắc là cấm chạy test luôn -->
                         <phase>validate</phase>
                         <goals>
                             <goal>check</goal>
@@ -124,14 +120,20 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.5.2</version>
                 <executions>
+
+                    <!-- ══ JAR 1: client.jar ══════════════════════════════ -->
                     <execution>
+                        <id>build-client-jar</id>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <!-- Ten file output: target/client.jar -->
+                            <outputFile>${project.build.directory}/client.jar</outputFile>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <!-- Main class cua Client la Launcher (khong phai MainApplication) -->
                                     <mainClass>com.uet.auction.Launcher</mainClass>
                                 </transformer>
                             </transformers>
@@ -148,6 +150,37 @@
                             </filters>
                         </configuration>
                     </execution>
+
+                    <!-- ══ JAR 2: server.jar ══════════════════════════════ -->
+                    <execution>
+                        <id>build-server-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Ten file output: target/server.jar -->
+                            <outputFile>${project.build.directory}/server.jar</outputFile>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <!-- Main class cua Server la AuctionServer -->
+                                    <mainClass>com.uet.auction.AuctionServer</mainClass>
+                                </transformer>
+                            </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>module-info.class</exclude>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+
                 </executions>
             </plugin>
         </plugins>

@@ -7,6 +7,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.layout.VBox;
+import javafx.scene.control.Label;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -36,7 +38,8 @@ public class DashboardController implements Initializable {
     @FXML private TableColumn<Item, LocalDateTime> colEndTime;
 
     // 2. Khai báo các ô nhập liệu của Seller
-    @FXML private HBox addProductBox;
+    @FXML private javafx.scene.layout.VBox addProductBox;
+    @FXML private Label balanceLabel;
     @FXML private TextField newNameField;
     @FXML private TextField newDescField;
     @FXML private TextField newPriceField;
@@ -115,6 +118,9 @@ public class DashboardController implements Initializable {
             }
         });
 
+        // Cap nhat hien thi so du
+        updateBalanceLabel();
+
         // 4. Phân quyền Bidder / Seller
         User currentUser = SessionManager.getInstance().getCurrentUser();
         if (currentUser != null) {
@@ -170,6 +176,204 @@ public class DashboardController implements Initializable {
         updateDashboardStats();
     }
 
+
+
+    // ==========================================
+    // NAP TIEN
+    // ==========================================
+    @FXML
+    public void handleDeposit() {
+        com.auction.model.User currentUser =
+                SessionManager.getInstance().getCurrentUser();
+        if (currentUser == null) return;
+
+        // Dialog nap tien co giao dien dep
+        javafx.scene.control.Dialog<String> dialog =
+                new javafx.scene.control.Dialog<>();
+        dialog.setTitle("Nạp tiền vào tài khoản");
+
+        // Header xanh la
+        javafx.scene.layout.VBox dHeader = new javafx.scene.layout.VBox(6);
+        dHeader.setStyle("-fx-background-color: #2D6A4F;"
+                + "-fx-padding: 20 24 16 24; -fx-alignment: CENTER;");
+        javafx.scene.control.Label dIcon =
+                new javafx.scene.control.Label("💰");
+        dIcon.setStyle("-fx-font-size: 30px;");
+        javafx.scene.control.Label dTitle =
+                new javafx.scene.control.Label("Nạp tiền vào tài khoản");
+        dTitle.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;"
+                + "-fx-text-fill: white;");
+        javafx.scene.control.Label dBalance =
+                new javafx.scene.control.Label(
+                        "Số dư hiện tại: "
+                                + String.format("%,.0f VNĐ", currentUser.getBalance())
+                                .replace(",", "."));
+        dBalance.setStyle("-fx-font-size: 12px; -fx-text-fill: #A7F3D0;");
+        dHeader.getChildren().addAll(dIcon, dTitle, dBalance);
+
+        // Body
+        javafx.scene.layout.VBox dBody = new javafx.scene.layout.VBox(10);
+        dBody.setStyle("-fx-background-color: white;"
+                + "-fx-padding: 20 24 8 24;");
+        javafx.scene.control.Label dLabel =
+                new javafx.scene.control.Label("Nhập số tiền muốn nạp (VNĐ):");
+        dLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #374151;");
+        javafx.scene.control.TextField dInput =
+                new javafx.scene.control.TextField("100000");
+        dInput.setStyle("-fx-font-size: 14px; -fx-pref-height: 40px;"
+                + "-fx-background-radius: 8;"
+                + "-fx-border-color: #D1FAE5; -fx-border-radius: 8;");
+        dBody.getChildren().addAll(dLabel, dInput);
+
+        // Assemble
+        javafx.scene.layout.VBox dRoot = new javafx.scene.layout.VBox(0);
+        dRoot.setStyle("-fx-background-color: white;");
+        dRoot.setPrefWidth(340);
+        dRoot.getChildren().addAll(dHeader, dBody);
+
+        dialog.getDialogPane().setContent(dRoot);
+        dialog.getDialogPane().setStyle(
+                "-fx-background-color: white; -fx-padding: 0;");
+
+        javafx.scene.control.ButtonType btnOk =
+                new javafx.scene.control.ButtonType("Nạp tiền",
+                        javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
+        javafx.scene.control.ButtonType btnCancel =
+                new javafx.scene.control.ButtonType("Huỷ",
+                        javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().setAll(btnOk, btnCancel);
+
+        dialog.setResultConverter(btn -> {
+            if (btn == btnOk) return dInput.getText();
+            return null;
+        });
+
+        dialog.setOnShown(ev -> {
+            javafx.scene.Node okNode =
+                    dialog.getDialogPane().lookupButton(btnOk);
+            if (okNode != null) okNode.setStyle(
+                    "-fx-background-color: #2D6A4F; -fx-text-fill: white;"
+                            + "-fx-font-weight: bold; -fx-background-radius: 8;"
+                            + "-fx-cursor: hand; -fx-padding: 8 20;");
+            javafx.scene.Node cancelNode =
+                    dialog.getDialogPane().lookupButton(btnCancel);
+            if (cancelNode != null) cancelNode.setStyle(
+                    "-fx-background-color: #F3F4F6; -fx-text-fill: #374151;"
+                            + "-fx-background-radius: 8; -fx-cursor: hand;"
+                            + "-fx-padding: 8 20;");
+        });
+
+        dialog.showAndWait().ifPresent(input -> {
+            if (input == null) return;
+            try {
+                double amount = Double.parseDouble(
+                        input.trim().replace(".", "").replace(",", ""));
+
+                if (amount <= 0) {
+                    showNapTienError("Số tiền phải lớn hơn 0!");
+                    return;
+                }
+
+                if (amount > 1_000_000_000) {
+                    showNapTienError("Số tiền nạp tối đa là 1.000.000.000 VNĐ!");
+                    return;
+                }
+
+                // Cap nhat so du
+                double newBalance = currentUser.getBalance() + amount;
+                currentUser.setBalance(newBalance);
+                DataManager.updateBalance(currentUser.getId(), newBalance);
+
+                // Cap nhat hien thi
+                updateBalanceLabel();
+
+                // Thong bao thanh cong
+                javafx.scene.control.Alert alert =
+                        new javafx.scene.control.Alert(
+                                javafx.scene.control.Alert.AlertType.NONE);
+                alert.setTitle("Nạp tiền thành công");
+                alert.setHeaderText(null);
+
+                javafx.scene.layout.VBox header =
+                        new javafx.scene.layout.VBox(6);
+                header.setStyle("-fx-background-color: #2D6A4F;"
+                        + "-fx-padding: 20 24 16 24; -fx-alignment: CENTER;");
+                javafx.scene.control.Label icon =
+                        new javafx.scene.control.Label("💰");
+                icon.setStyle("-fx-font-size: 30px;");
+                javafx.scene.control.Label title =
+                        new javafx.scene.control.Label("Nạp tiền thành công!");
+                title.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;"
+                        + "-fx-text-fill: white;");
+                header.getChildren().addAll(icon, title);
+
+                javafx.scene.layout.VBox body =
+                        new javafx.scene.layout.VBox(6);
+                body.setStyle("-fx-background-color: white;"
+                        + "-fx-padding: 16 24 12 24; -fx-alignment: CENTER;");
+                javafx.scene.control.Label added =
+                        new javafx.scene.control.Label(
+                                "+ " + String.format("%,.0f VNĐ", amount)
+                                        .replace(",", "."));
+                added.setStyle("-fx-font-size: 22px; -fx-font-weight: bold;"
+                        + "-fx-text-fill: #2D6A4F;");
+                javafx.scene.control.Label total =
+                        new javafx.scene.control.Label(
+                                "Số dư mới: "
+                                        + String.format("%,.0f VNĐ", newBalance)
+                                        .replace(",", "."));
+                total.setStyle("-fx-font-size: 13px; -fx-text-fill: #6B7280;");
+                body.getChildren().addAll(added, total);
+
+                javafx.scene.layout.VBox root =
+                        new javafx.scene.layout.VBox(0);
+                root.setStyle("-fx-background-color: white;");
+                root.setPrefWidth(320);
+                root.getChildren().addAll(header, body);
+
+                alert.getDialogPane().setContent(root);
+                alert.getDialogPane().setStyle(
+                        "-fx-background-color: white; -fx-padding: 0;");
+
+                javafx.scene.control.ButtonType btnSuccess =
+                        new javafx.scene.control.ButtonType("Tuyệt vời!",
+                                javafx.scene.control.ButtonBar.ButtonData.OK_DONE);
+                alert.getButtonTypes().setAll(btnSuccess);
+                alert.setOnShown(ev -> {
+                    javafx.scene.Node btn =
+                            alert.getDialogPane().lookupButton(btnSuccess);
+                    if (btn != null) btn.setStyle(
+                            "-fx-background-color: #2D6A4F; -fx-text-fill: white;"
+                                    + "-fx-font-weight: bold; -fx-background-radius: 8;"
+                                    + "-fx-cursor: hand; -fx-padding: 8 24;");
+                });
+                alert.showAndWait();
+
+            } catch (NumberFormatException e) {
+                showNapTienError("Vui lòng nhập số hợp lệ!");
+            }
+        });
+    }
+
+    private void updateBalanceLabel() {
+        if (balanceLabel == null) return;
+        com.auction.model.User user =
+                SessionManager.getInstance().getCurrentUser();
+        if (user == null) return;
+        String fmt = String.format("%,.0f", user.getBalance())
+                .replace(",", ".");
+        balanceLabel.setText(fmt + " VNĐ");
+    }
+
+    private void showNapTienError(String msg) {
+        javafx.scene.control.Alert err =
+                new javafx.scene.control.Alert(
+                        javafx.scene.control.Alert.AlertType.ERROR);
+        err.setTitle("Lỗi nạp tiền");
+        err.setHeaderText(null);
+        err.setContentText(msg);
+        err.showAndWait();
+    }
 
     // ==========================================
     // CÁC HÀM XỬ LÝ CỦA SELLER
