@@ -205,23 +205,27 @@
                                 styleClass="btn-delete" text="Xóa" />
                     </HBox>
 
-                    <!-- Hang 2: So du va nut nap tien -->
-                    <HBox fx:id="depositBox" alignment="CENTER_LEFT" spacing="12.0">
-                        <Label text="Số dư tài khoản:"
-                               style="-fx-font-size: 13px; -fx-text-fill: #6B7280;" />
-                        <Label fx:id="balanceLabel"
-                               text="0 VNĐ"
-                               style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2D6A4F;" />
-                        <Region HBox.hgrow="ALWAYS" />
-                        <Button mnemonicParsing="false" onAction="#handleDeposit"
-                                prefHeight="34.0" prefWidth="120.0"
-                                text="💰 Nạp tiền"
-                                style="-fx-background-color: #1A2E22; -fx-text-fill: white;
-                                       -fx-font-weight: bold; -fx-font-size: 12px;
-                                       -fx-background-radius: 8; -fx-cursor: hand;" />
-                    </HBox>
-
                 </VBox>
+
+                <!-- Bidder: hien thi so du va nut nap tien -->
+                <HBox fx:id="depositBox" alignment="CENTER_LEFT" spacing="12.0"
+                      style="-fx-background-color: #F0FDF4; -fx-padding: 10 16 10 16;
+                             -fx-background-radius: 10; -fx-border-color: #D1FAE5;
+                             -fx-border-radius: 10;"
+                      visible="false" managed="false">
+                    <Label text="💰  Số dư của bạn:"
+                           style="-fx-font-size: 13px; -fx-text-fill: #6B7280;" />
+                    <Label fx:id="balanceLabel"
+                           text="0 VNĐ"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2D6A4F;" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Button mnemonicParsing="false" onAction="#handleDeposit"
+                            prefHeight="36.0" prefWidth="130.0"
+                            text="+ Nạp tiền"
+                            style="-fx-background-color: #2D6A4F; -fx-text-fill: white;
+                                   -fx-font-weight: bold; -fx-font-size: 13px;
+                                   -fx-background-radius: 8; -fx-cursor: hand;" />
+                </HBox>
 
             </VBox>
         </VBox>

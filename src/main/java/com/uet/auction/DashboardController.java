@@ -39,6 +39,7 @@ public class DashboardController implements Initializable {
 
     // 2. Khai báo các ô nhập liệu của Seller
     @FXML private javafx.scene.layout.VBox addProductBox;
+    @FXML private javafx.scene.layout.HBox depositBox;
     @FXML private Label balanceLabel;
     @FXML private TextField newNameField;
     @FXML private TextField newDescField;
