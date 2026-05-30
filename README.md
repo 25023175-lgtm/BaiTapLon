@@ -11,9 +11,9 @@ Hệ thống Đấu giá Trực tuyến cho phép người dùng đăng ký tài
 
 **Phạm vi hệ thống:**
 
-- Người bán đăng sản phẩm lên hệ thống với giá khởi điểm và thời gian kết thúc
+- Người bán đăng sản phẩm với giá khởi điểm và thời gian kết thúc, nạp tiền vào tài khoản
 - Người mua đặt giá cạnh tranh, hệ thống tự động kiểm tra tính hợp lệ
-- Khi phiên kết thúc, hệ thống xác định người thắng cuộc
+- Khi phiên kết thúc, hệ thống tự động xác định người thắng cuộc
 - Giao diện cập nhật realtime khi có thay đổi từ bất kỳ client nào
 - Admin quản trị toàn bộ hệ thống qua tài khoản đặc biệt
 
@@ -53,29 +53,29 @@ BaiTapLon/
 │   ├── main/
 │   │   ├── java/
 │   │   │   ├── com/auction/
-│   │   │   │   ├── common/          # Custom Exceptions
+│   │   │   │   ├── common/              # Custom Exceptions
 │   │   │   │   │   ├── AuctionClosedException.java
 │   │   │   │   │   ├── InvalidBidException.java
 │   │   │   │   │   └── AuthenticationException.java
-│   │   │   │   ├── factory/         # Factory Pattern
+│   │   │   │   ├── factory/             # Factory Pattern
 │   │   │   │   │   ├── UserFactory.java
 │   │   │   │   │   └── ItemFactory.java
-│   │   │   │   ├── model/           # OOP Model Classes
-│   │   │   │   │   ├── User.java          (abstract)
+│   │   │   │   ├── model/               # OOP Model Classes
+│   │   │   │   │   ├── User.java              (abstract)
 │   │   │   │   │   ├── Bidder.java
 │   │   │   │   │   ├── Seller.java
 │   │   │   │   │   ├── Admin.java
-│   │   │   │   │   ├── Item.java          (abstract)
+│   │   │   │   │   ├── Item.java              (abstract)
 │   │   │   │   │   ├── Product.java
 │   │   │   │   │   ├── Electronics.java
 │   │   │   │   │   ├── Art.java
 │   │   │   │   │   ├── Vehicle.java
 │   │   │   │   │   └── Bid.java
-│   │   │   │   └── observer/        # Observer Pattern
+│   │   │   │   └── observer/            # Observer Pattern
 │   │   │   │       ├── AuctionObserver.java
 │   │   │   │       ├── AuctionSubject.java
 │   │   │   │       └── AuctionManager.java
-│   │   │   ├── com/uet/auction/     # Controllers & Server
+│   │   │   ├── com/uet/auction/         # Controllers & Server
 │   │   │   │   ├── AuctionServer.java
 │   │   │   │   ├── ClientHandler.java
 │   │   │   │   ├── DashboardController.java
@@ -93,11 +93,11 @@ BaiTapLon/
 │   │       ├── register-view.fxml
 │   │       ├── bid-view.fxml
 │   │       └── styles.css
-│   └── test/                        # Unit Tests (JUnit 5)
+│   └── test/                            # Unit Tests (JUnit 5)
 ├── target/
-│   ├── server.jar                   # File JAR máy chủ
-│   └── client.jar                   # File JAR giao diện người dùng
-├── .github/workflows/ci.yml         # CI/CD GitHub Actions
+│   ├── server.jar                       # File JAR máy chủ
+│   └── client.jar                       # File JAR giao diện người dùng
+├── .github/workflows/ci.yml             # CI/CD GitHub Actions
 ├── pom.xml
 └── README.md
 ```
@@ -194,9 +194,10 @@ Sau khi build xong, kiểm tra thư mục `target/` có 2 file: `server.jar` và
 
 ### Bước 2 — Chạy Server (bắt buộc chạy TRƯỚC)
 
-Mở một terminal và chạy:
+Mở một terminal, di chuyển vào thư mục project và chạy:
 
 ```bash
+cd ~/IdeaProjects/AuctionSystem_UET
 java -jar target/server.jar
 ```
 
@@ -213,9 +214,10 @@ Chờ đến khi thấy thông báo:
 
 ### Bước 3 — Chạy Client (mở nhiều cửa sổ để test realtime)
 
-Mở terminal **mới** và chạy:
+Mở terminal **mới**, di chuyển vào thư mục project và chạy:
 
 ```bash
+cd ~/IdeaProjects/AuctionSystem_UET
 java -jar target/client.jar
 ```
 
@@ -251,8 +253,7 @@ java -jar target/client.jar
 - [x] Thêm / Xoá sản phẩm — Seller chỉ xoá được sản phẩm của mình
 - [x] Ngăn Seller tự đấu giá sản phẩm của chính mình
 - [x] Đặt giá với kiểm tra hợp lệ (phải cao hơn giá hiện tại)
-- [x] Tự động đóng phiên khi hết thời gian
-- [x] Xác định người thắng cuộc
+- [x] Tự động đóng phiên khi hết thời gian, xác định người thắng cuộc
 - [x] Cập nhật realtime cho tất cả client đang mở
 - [x] Xử lý lỗi & ngoại lệ: `AuctionClosedException`, `InvalidBidException`, `AuthenticationException`
 - [x] Xử lý đấu giá đồng thời với `synchronized`
@@ -261,13 +262,14 @@ java -jar target/client.jar
 - [x] Thiết kế OOP: Abstract class, Inheritance, Polymorphism, Interface
 - [x] Design Patterns: Singleton, Factory Method, Observer
 - [x] Maven build + Checkstyle (Google Style)
-- [x] Unit Test JUnit 5 (13 lớp kiểm thử)
+- [x] Unit Test JUnit 5 (15 lớp kiểm thử)
 - [x] CI/CD GitHub Actions (build + test + checkstyle tự động)
 
 ### Chức năng nâng cao (điểm bonus)
 
 - [x] **Chống Sniping** — Tự động gia hạn 5 phút khi có lượt đặt giá trong 60 giây cuối
 - [x] **Biểu đồ lịch sử giá** — Biểu đồ vùng (AreaChart) hiển thị lịch sử giá theo thời gian
+- [x] **Nạp tiền** — Seller nạp tiền vào tài khoản qua giao diện có style
 - [ ] Đấu giá tự động (Auto-Bidding) — chưa triển khai
 
 ---
