@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3cdd559f-324e-495d-9afd-4b317b85caaa" name="Changes" comment="Hoàn thành UI đăng nhập, Đăng ký và kết nối SceneManager" />
+    <list default="true" id="3cdd559f-324e-495d-9afd-4b317b85caaa" name="Changes" comment="Hoàn thành UI đăng nhập, Đăng ký và kết nối SceneManager">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/uet/auction/DashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/uet/auction/DashboardController.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -274,7 +277,7 @@
       <workItem from="1778915750261" duration="601000" />
       <workItem from="1779344336859" duration="10185000" />
       <workItem from="1779951133692" duration="2860000" />
-      <workItem from="1780150612438" duration="357000" />
+      <workItem from="1780150612438" duration="1368000" />
     </task>
     <task id="LOCAL-00001" summary="Hoàn thành UI đăng nhập, Đăng ký và kết nối SceneManager">
       <option name="closed" value="true" />

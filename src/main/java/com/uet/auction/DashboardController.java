@@ -128,11 +128,16 @@ public class DashboardController implements Initializable {
             String role = currentUser.getRole();
 
             if ("Bidder".equals(role)) {
-                // Người mua: Giấu thanh thêm sản phẩm
+                // Nguoi mua: An thanh them san pham, HIEN khu nap tien
                 if (addProductBox != null) {
                     addProductBox.setVisible(false);
                     addProductBox.setManaged(false);
                 }
+                if (depositBox != null) {
+                    depositBox.setVisible(true);
+                    depositBox.setManaged(true);
+                }
+                updateBalanceLabel();
 
                 // Click đúp để mở Pop-up đấu giá HOẶC bảng chi tiết
                 productTable.setOnMouseClicked(event -> {
@@ -143,7 +148,11 @@ public class DashboardController implements Initializable {
                 });
 
             } else if ("Seller".equals(role)) {
-                // Người bán: Hiện thanh thêm sản phẩm, không cho mở BidWindow
+                // Nguoi ban: Hien thanh them san pham, an khu nap tien
+                if (depositBox != null) {
+                    depositBox.setVisible(false);
+                    depositBox.setManaged(false);
+                }
                 if (addProductBox != null) {
                     addProductBox.setVisible(true);
                     addProductBox.setManaged(true);
